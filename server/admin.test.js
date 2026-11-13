@@ -12,7 +12,48 @@ test('open source projects and course kinds are accepted',()=>{
  const draft=structuredClone(initialContent);
  draft.projects[0].category='Open Source';
  draft.projects[0].collaborators='Equipo de ejemplo';
- draft.courses[0].kind='Evento';
+ draft.courses.push({
+  id:'test-course',
+  title:'Curso de React',
+  institution:'Platzi',
+  period:'2026',
+  description:'Formación avanzada',
+  url:'https://example.com/course',
+  tech:['React'],
+  kind:'Evento',
+  credential:'XYZ',
+  certificate:'https://example.com/certificate.pdf',
+  badge:'',
+  visible:true
+ });
+ assert.equal(contentSchema.safeParse(draft).success,true);
+});
+
+test('course certificate is mandatory and badge is optional',()=>{
+ const draft=structuredClone(initialContent);
+ const courseWithoutCert={
+  id:'course-1',
+  title:'Curso sin certificado',
+  institution:'Academia',
+  period:'2026',
+  description:'',
+  url:'',
+  tech:[],
+  kind:'Curso',
+  credential:'',
+  certificate:'',
+  badge:'',
+  visible:true
+ };
+ draft.courses=[courseWithoutCert];
+ assert.equal(contentSchema.safeParse(draft).success,false);
+
+ const courseWithCert={
+  ...courseWithoutCert,
+  certificate:'/api/media/11111111-2222-3333-4444-555555555555',
+  badge:'/api/media/22222222-3333-4444-5555-666666666666'
+ };
+ draft.courses=[courseWithCert];
  assert.equal(contentSchema.safeParse(draft).success,true);
 });
 test('public content omits hidden items without changing stored content',()=>{const draft=structuredClone(initialContent);draft.projects[0].visible=false;const result=publicContent(draft);assert.equal(result.projects.length,draft.projects.length-1);assert.equal(draft.projects.length,4);assert.ok(!result.projects.some(p=>p.id===draft.projects[0].id))});

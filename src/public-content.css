@@ -106,8 +106,14 @@
     margin-top: 20px
 }
 
+.course-card .course-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 22px
+}
+
 .course-card .text-link {
-    margin-top: 22px;
     font-size: var(--font-small)
 }
 

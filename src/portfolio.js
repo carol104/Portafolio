@@ -31,44 +31,4 @@ export function categoryLabel(category) {
   return PROJECT_FILTERS.find(item => item.id === category)?.label || category;
 }
 
-export const placeholderCourses = [
-  {
-    id: 'cisco-placeholder',
-    title: 'Curso de redes (Cisco Networking Academy)',
-    institution: 'Cisco Networking Academy',
-    period: 'Añade la fecha de aprobación',
-    description: 'Placeholder: completa el nombre exacto del curso, las horas o la fecha y el enlace a tu credencial.',
-    url: '',
-    tech: ['Networking'],
-    kind: 'Curso',
-    credential: 'ID de credencial',
-    placeholder: true,
-    visible: true,
-  },
-  {
-    id: 'cert-placeholder',
-    title: 'Certificación por documentar',
-    institution: 'Institución emisora',
-    period: 'Añade el año',
-    description: 'Placeholder: describe la certificación, el alcance y cómo verificarla.',
-    url: '',
-    tech: [],
-    kind: 'Certificación',
-    credential: 'Código o badge',
-    placeholder: true,
-    visible: true,
-  },
-  {
-    id: 'event-placeholder',
-    title: 'Hackathon o evento tecnológico',
-    institution: 'Organizador del evento',
-    period: 'Añade la fecha',
-    description: 'Placeholder: documenta el evento, tu rol, el equipo y el resultado.',
-    url: '',
-    tech: ['Trabajo en equipo'],
-    kind: 'Evento',
-    credential: '',
-    placeholder: true,
-    visible: true,
-  },
-];
+export const placeholderCourses = [];

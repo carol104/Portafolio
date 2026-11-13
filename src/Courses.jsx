@@ -30,7 +30,18 @@ export default function Courses({ courses }) {
                 {course.credential && <p className="course-credential">Credencial: {course.credential}</p>}
                 <p>{course.description}</p>
                 <TechnologyTags items={course.tech}/>
-                {course.url && <ExternalLink href={course.url} className="text-link">Ver credencial <ArrowUpRight size={18} aria-hidden="true"/></ExternalLink>}
+                <div className="course-actions">
+                  {(course.certificate || course.url) && (
+                    <ExternalLink href={course.certificate || course.url} className="text-link">
+                      Ver certificado <ArrowUpRight size={18} aria-hidden="true"/>
+                    </ExternalLink>
+                  )}
+                  {course.badge && (
+                    <ExternalLink href={course.badge} className="text-link">
+                      Ver insignia <ArrowUpRight size={18} aria-hidden="true"/>
+                    </ExternalLink>
+                  )}
+                </div>
                 {course.placeholder && <p className="example-note">Placeholder para completar desde el panel.</p>}
                 <span className="course-index">{String(index + 1).padStart(2, '0')}</span>
               </SpotlightCard>

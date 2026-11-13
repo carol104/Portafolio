@@ -1,0 +1,50 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {createRequire} from 'node:module';
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {transformWithEsbuild} from 'vite';
+
+const require=createRequire(import.meta.url);
+async function component(filename,dependencies={}){
+ const source=await readFile(new URL(filename,import.meta.url),'utf8');
+ const {code}=await transformWithEsbuild(source,filename,{jsx:'transform',jsxFactory:'React.createElement',format:'cjs'});
+ const module={exports:{}};
+ const resolve=id=>dependencies[id]||require(id);
+ new Function('module','exports','require','React',code)(module,module.exports,resolve,React);
+ return module.exports;
+}
+
+test('professional links in both header and contact open a separate tab safely',async()=>{
+ const anchor=await component('ExternalLink.jsx');
+ const {default:SocialLinks}=await component('SocialLinks.jsx',{'./ExternalLink':anchor});
+ const profile={github:'https://github.com/carol104',linkedin:'https://www.linkedin.com/in/carol-cañizares-villacís-1518833ba/'};
+ for(const compact of [true,false]){
+  const html=renderToStaticMarkup(React.createElement(SocialLinks,{profile,compact}));
+  const links=[...html.matchAll(/<a\b[^>]*>/g)].map(match=>match[0]);
+  assert.equal(links.length,2);
+  for(const link of links){assert.match(link,/target="_blank"/);assert.match(link,/rel="noopener noreferrer"/)}
+  assert.ok(html.includes(profile.github));assert.ok(html.includes(profile.linkedin));
+  assert.match(html,/se abre en una pestaña nueva/);
+ }
+});
+
+test('project filters combine category and stack without dropping real items',async()=>{
+ const {filterProjects}=await import('../portfolio.js');
+ const projects=[
+  {id:'a',category:'Personal',tech:['React']},
+  {id:'b',category:'Colaboración',tech:['React','Express']},
+  {id:'c',category:'Open Source',tech:['Git']},
+ ];
+ assert.equal(filterProjects(projects,'Todos','Todos').length,3);
+ assert.deepEqual(filterProjects(projects,'Personal','Todos').map(p=>p.id),['a']);
+ assert.deepEqual(filterProjects(projects,'Todos','React').map(p=>p.id),['a','b']);
+ assert.equal(filterProjects(projects,'Clientes','React').length,0);
+});
+
+test('section headings share semantic titles and optional descriptions',async()=>{
+ const {default:Heading}=await component('SectionHeading.jsx',{'../motion':{Reveal:({children,className})=>React.createElement('div',{className},children)}});
+ const html=renderToStaticMarkup(React.createElement(Heading,{number:'01',kicker:'Sobre mí',id:'about-title',text:'Una presentación legible.'},'Carol'));
+ assert.match(html,/<h2 id="about-title">Carol<\/h2>/);assert.ok(html.includes('Una presentación legible.'));
+});

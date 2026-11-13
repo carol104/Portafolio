@@ -1,0 +1,8 @@
+node_modules
+dist
+.git
+.env
+*.log
+artifacts
+tmp
+ADMIN-ACCESO.local.txt

@@ -1,0 +1,30 @@
+services:
+  app:
+    build: .
+    ports:
+      - "${APP_PORT:-8080}:3001"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://portfolio:${POSTGRES_PASSWORD:?Configura POSTGRES_PASSWORD en .env}@db:5432/portfolio
+      TRUST_PROXY: ${TRUST_PROXY:-0}
+      ADMIN_SETUP_TOKEN: ${ADMIN_SETUP_TOKEN:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: portfolio
+      POSTGRES_USER: portfolio
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configura POSTGRES_PASSWORD en .env}
+    volumes:
+      - portfolio_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio -d portfolio"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+volumes:
+  portfolio_data:

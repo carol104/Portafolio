@@ -20,6 +20,7 @@ icons={
  'jenkins':'jenkins/jenkins-original.svg','selenium':'selenium/selenium-original.svg',
  'playwright':'playwright/playwright-original.svg','pytest':'pytest/pytest-original.svg',
  'sonarqube':'sonarqube/sonarqube-original.svg','junit':'junit/junit-original.svg',
+ 'grafana':'grafana/grafana-original.svg',
 }
 target=Path('public/technology-logos');target.mkdir(parents=True,exist_ok=True)
 def download(item):

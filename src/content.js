@@ -12,7 +12,7 @@ export const technologyGroups = [
   { title: 'Lenguajes', description: 'La base para construir soluciones.', icon: 'code', items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'PHP', 'C#'] },
   { title: 'Frontend', description: 'Interfaces web y móviles que conectan con las personas.', icon: 'frontend', items: ['React', 'Angular', 'Ionic', 'Vite', 'Tailwind CSS'] },
   { title: 'Backend', description: 'Lógica, servicios y aplicaciones web.', icon: 'backend', items: ['Spring Boot', 'Laravel', 'ASP.NET Core', 'Express', 'Node.js'] },
-  { title: 'Bases de datos', description: 'Información organizada y accesible.', icon: 'database', items: ['SQL Server', 'Oracle', 'PostgreSQL', 'MongoDB'] },
+  { title: 'Data y Business Intelligence', description: 'Información organizada, análisis y visualización de datos.', icon: 'database', items: ['SQL Server', 'Oracle', 'PostgreSQL', 'MongoDB', 'Power BI', 'Grafana'] },
   { title: 'Calidad y pruebas', description: 'Automatización, análisis de código y pruebas de software.', icon: 'quality', items: ['Selenium', 'Playwright', 'pytest', 'SonarQube', 'JUnit'] },
   { title: 'CI/CD y despliegue', description: 'Integración continua y publicación de aplicaciones.', icon: 'deploy', items: ['Docker', 'Jenkins', 'Heroku', 'Railway'] },
 ];

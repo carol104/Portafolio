@@ -48,3 +48,18 @@ test('section headings share semantic titles and optional descriptions',async()=
  const html=renderToStaticMarkup(React.createElement(Heading,{number:'01',kicker:'Sobre mí',id:'about-title',text:'Una presentación legible.'},'Carol'));
  assert.match(html,/<h2 id="about-title">Carol<\/h2>/);assert.ok(html.includes('Una presentación legible.'));
 });
+
+test('technology logos and Data & Business Intelligence box are configured with svgs',async()=>{
+ const {technologyLogoName}=await component('../TechnologyLogo.jsx');
+ const {technologyGroups}=await import('../content.js');
+ const biGroup=technologyGroups.find(g=>g.icon==='database');
+ assert.ok(biGroup);
+ assert.equal(biGroup.title,'Data y Business Intelligence');
+ assert.ok(biGroup.items.includes('Grafana'));
+ assert.ok(biGroup.items.includes('Power BI'));
+ assert.equal(technologyLogoName('Grafana'),'grafana');
+ assert.equal(technologyLogoName('Power BI'),'powerbi');
+ const {access}=await import('node:fs/promises');
+ await access(new URL('../../public/technology-logos/grafana.svg',import.meta.url));
+ await access(new URL('../../public/technology-logos/powerbi.svg',import.meta.url));
+});

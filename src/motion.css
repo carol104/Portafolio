@@ -176,21 +176,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 12px;
-}
-
-.course-card-top small {
-  float: none;
-  max-width: none;
-  text-align: right;
+  margin-bottom: 14px;
 }
 
 .course-index {
-  position: absolute;
-  right: 18px;
-  bottom: 16px;
-  color: #5d7698;
-  font-size: var(--font-caption);
+  display: none !important;
 }
 
 .preview.generic,

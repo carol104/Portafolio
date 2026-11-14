@@ -63,3 +63,13 @@ test('technology logos and Data & Business Intelligence box are configured with 
  await access(new URL('../../public/technology-logos/grafana.svg',import.meta.url));
  await access(new URL('../../public/technology-logos/powerbi.svg',import.meta.url));
 });
+
+test('platform logos for Cisco and Udemy resolve correctly and svgs exist',async()=>{
+ const {platformLogoName}=await component('PlatformLogo.jsx');
+ assert.equal(platformLogoName('Cisco'),'cisco');
+ assert.equal(platformLogoName('Cisco Networking Academy'),'cisco');
+ assert.equal(platformLogoName('Udemy'),'udemy');
+ const {access}=await import('node:fs/promises');
+ await access(new URL('../../public/technology-logos/cisco.svg',import.meta.url));
+ await access(new URL('../../public/technology-logos/udemy.svg',import.meta.url));
+});

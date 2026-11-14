@@ -9,6 +9,7 @@ const logos = {
     react: 'react', reactjs: 'react', express: 'express', expressjs: 'express', nodejs: 'nodejs', node: 'nodejs',
     postgresql: 'postgresql', postgres: 'postgresql', docker: 'docker', ionic: 'ionic', ionicframework: 'ionic', angular: 'angular', angularjs: 'angular',
     grafana: 'grafana', powerbi: 'powerbi', pbi: 'powerbi',
+    cisco: 'cisco', udemy: 'udemy',
 };
 export function technologyLogoName(name) { return logos[name.toLowerCase().replace(/[\s.\-_]/g, '')] || null }
 export default function TechnologyLogo({ name }) {

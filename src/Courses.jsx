@@ -3,6 +3,7 @@ import SectionHeading from './components/SectionHeading';
 import ExternalLink from './components/ExternalLink';
 import TechnologyTags from './components/TechnologyTags';
 import SpotlightCard from './components/SpotlightCard';
+import PlatformLogo from './components/PlatformLogo';
 import { fadeUp, Stagger } from './motion';
 
 const icons = { Curso: GraduationCap, Certificación: Award, Evento: CalendarDays };
@@ -16,20 +17,50 @@ export default function Courses({ courses }) {
       </SectionHeading>
       {items.length ? (
         <Stagger className="course-timeline" as="div">
-          {items.map((course, index) => {
+          {items.map((course) => {
             const Icon = icons[course.kind] || GraduationCap;
             return (
               <SpotlightCard key={course.id} className={`course-card course-${(course.kind || 'Curso').toLowerCase()}`} variants={fadeUp}>
                 <span className="course-node" aria-hidden="true"/>
-                <div className="course-card-top">
-                  <Icon size={26} aria-hidden="true"/>
-                  <small>{course.kind} · {course.period}</small>
+                
+                {/* Espacio limpio para imagen o banner */}
+                <div className="course-banner">
+                  {course.image ? (
+                    <img src={course.image} alt={course.title} className="course-banner-img" loading="lazy" />
+                  ) : (
+                    <div className="course-banner-placeholder" aria-hidden="true">
+                      <div className="course-banner-sheen" />
+                      <div className="course-banner-brand">
+                        <PlatformLogo platform={course.platform} institution={course.institution} className="course-banner-logo" />
+                        <Icon size={34} strokeWidth={1.5} className="course-banner-icon" />
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <h3>{course.title}</h3>
-                <h4>{course.institution}</h4>
-                {course.credential && <p className="course-credential">Credencial: {course.credential}</p>}
-                <p>{course.description}</p>
-                <TechnologyTags items={course.tech}/>
+
+                <div className="course-card-top">
+                  <div className="course-platform-badge">
+                    <PlatformLogo platform={course.platform} institution={course.institution} className="course-badge-logo" />
+                    <span className="course-platform-name">{course.institution}</span>
+                  </div>
+                  <div className="course-kind-pill">
+                    <Icon size={16} aria-hidden="true"/>
+                    <span>{course.kind} · {course.period}</span>
+                  </div>
+                </div>
+
+                <h3 className="course-title">{course.title}</h3>
+
+                {course.credential && (
+                  <p className="course-credential">
+                    Credencial: <span>{course.credential}</span>
+                  </p>
+                )}
+
+                {course.description && <p className="course-description">{course.description}</p>}
+
+                {course.tech?.length > 0 && <TechnologyTags items={course.tech}/>}
+
                 <div className="course-actions">
                   {(course.certificate || course.url) && (
                     <ExternalLink href={course.certificate || course.url} className="text-link">
@@ -42,8 +73,6 @@ export default function Courses({ courses }) {
                     </ExternalLink>
                   )}
                 </div>
-                {course.placeholder && <p className="example-note">Placeholder para completar desde el panel.</p>}
-                <span className="course-index">{String(index + 1).padStart(2, '0')}</span>
               </SpotlightCard>
             );
           })}

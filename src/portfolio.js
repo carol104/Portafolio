@@ -9,6 +9,7 @@ export const PROJECT_FILTERS = [
 ];
 
 export const COURSE_KINDS = ['Curso', 'Certificación', 'Evento'];
+export const PLATFORMS = ['Cisco', 'Udemy', 'Otro'];
 export const INTEREST_ICONS = ['terminal', 'database', 'compass', 'music', 'game', 'idea', 'camera', 'bird'];
 export const PREVIEW_STYLES = ['orbit', 'store', 'analytics', 'hack'];
 

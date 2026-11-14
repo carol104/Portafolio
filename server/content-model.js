@@ -19,11 +19,13 @@ const courseSchema = z.object({
  tech: z.array(required).max(30),
  kind: z.enum(COURSE_KINDS).default('Curso'),
  credential: short.default(''),
+ platform: z.string().trim().max(100).default(''),
  certificate: z.string().trim().max(2048).default(''),
  badge: z.string().trim().max(2048).refine(
   value => !value || /^\/api\/media\/[a-f0-9-]{36}$/.test(value) || url.safeParse(value).success,
   'Sube un archivo PDF o PNG para la insignia'
  ).default(''),
+ image: media.default(''),
  placeholder: z.boolean().default(false)
 }).transform(course => {
  if (!course.certificate && course.url) course.certificate = course.url;
@@ -48,7 +50,7 @@ export const contentSchema=z.object({
 export function normalizeContent(data){
  const next=structuredClone(data);
  next.projects=(next.projects||[]).map(project=>({collaborators:'',...project,category:PROJECT_CATEGORIES.includes(project.category)?project.category:'Personal',style:PREVIEW_STYLES.includes(project.style)?project.style:'orbit'}));
- next.courses=(next.courses||[]).filter(course=>!course.placeholder&&course.id!=='cisco-placeholder'&&course.id!=='cert-placeholder'&&course.id!=='event-placeholder').map(course=>({kind:'Curso',credential:'',certificate:course.certificate||course.url||'',badge:course.badge||'',...course,placeholder:false,kind:COURSE_KINDS.includes(course.kind)?course.kind:'Curso'}));
+ next.courses=(next.courses||[]).filter(course=>!course.placeholder&&course.id!=='cisco-placeholder'&&course.id!=='cert-placeholder'&&course.id!=='event-placeholder').map(course=>({kind:'Curso',credential:'',platform:course.platform||(course.institution?.toLowerCase().includes('cisco')?'Cisco':course.institution?.toLowerCase().includes('udemy')?'Udemy':course.institution||''),certificate:course.certificate||course.url||'',badge:course.badge||'',image:course.image||'',...course,placeholder:false,kind:COURSE_KINDS.includes(course.kind)?course.kind:'Curso'}));
  next.interests=(next.interests||[]).map(item=>({...item,icon:INTEREST_ICONS.includes(item.icon)?item.icon:'idea'}));
  if(next.profile?.education?.title==='Tu carrera o formación') next.profile.education.title='Ingeniería de Software';
  return next;

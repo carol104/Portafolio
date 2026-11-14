@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ArrowUpRight, ArrowDown, Download, MapPin, Check, Layers, Terminal, Database, Compass, Gamepad2, Music2, Lightbulb, Code2, Camera, Binoculars, Braces } from 'lucide-react';
 import { ContentProvider, useContent } from './ContentContext';
@@ -18,13 +18,22 @@ import Footer from './components/Footer';
 import ProjectsPage from './ProjectsPage';
 import CoursesPage from './CoursesPage';
 import ContactPage from './ContactPage';
+import ProjectsSection from './components/ProjectsSection';
+import ProjectDialog from './components/ProjectDialog';
+import Courses from './Courses';
 import { MotionRoot, Reveal, Stagger, fadeUp, m } from './motion';
 
 const interestIcons = { terminal: Terminal, database: Database, compass: Compass, music: Music2, game: Gamepad2, idea: Lightbulb, camera: Camera, bird: Binoculars };
 
 function App() {
-    const { profile, experience, interests, appearance } = useContent();
+    const { profile, experience, interests, appearance, projects, courses } = useContent();
     const [active, setActive] = useState('inicio');
+    const [selected, setSelected] = useState(null);
+    const trigger = useRef(null);
+    function openProject(project, element) {
+        trigger.current = element;
+        setSelected(project);
+    }
     useEffect(() => {
         const sections = [...document.querySelectorAll('main section[id]')];
         let frame;
@@ -43,7 +52,7 @@ function App() {
         <a href="#contenido" className="skip-link">Saltar al contenido</a>
         <Header activeSection={active} />
         <main id="contenido">
-            <section id="inicio" className="hero">
+            <section id="inicio" className="hero content-container">
                 <div className="hero-grid" aria-hidden="true" />
                 <m.div className="hero-copy" initial="hidden" animate="show" variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}>
                     <m.p className="availability" variants={fadeUp}><span /> {profile.available ? 'Abierto a nuevas oportunidades' : 'Bienvenido a mi espacio digital'}</m.p>
@@ -85,7 +94,6 @@ function App() {
                 <a href="#sobre-mi" className="scroll-cue"><span>SCROLL PARA DESCUBRIR</span><ArrowDown size={15} /></a>
                 <div className="hero-index">DISEÑO + CÓDIGO + PROPÓSITO</div>
             </section>
-            <Technologies />
             <section id="sobre-mi" className="section about">
                 <SectionTitle number="01" kicker="UN POCO SOBRE MÍ">Detrás de cada línea,<br /><span>una persona curiosa.</span></SectionTitle>
                 <div className="about-grid">
@@ -98,6 +106,8 @@ function App() {
                     </Reveal>
                 </div>
             </section>
+            <Technologies />
+            <ProjectsSection projects={projects} onOpen={openProject} preview />
             <section id="experiencia" className="section experience">
                 <Reveal className="experience-intro">
                     <p className="eyebrow"><span>03 /</span> EL CAMINO RECORRIDO</p>
@@ -107,6 +117,7 @@ function App() {
                 </Reveal>
                 <div className="timeline">{experience.map((e, i) => <Reveal as="article" key={e.id} delay={i * 0.06}><span className="timeline-node" /><div className="timeline-top"><small>{e.type}</small><span>{String(i + 1).padStart(2, '0')}</span></div><h3>{e.title}</h3><h4>{e.place}</h4><p>{e.text}</p></Reveal>)}</div>
             </section>
+            <Courses courses={courses} preview />
             <section id="intereses" className="section interests">
                 <SectionTitle number="05" kicker="MÁS ALLÁ DEL CÓDIGO">Hobbies e <span>intereses técnicos.</span></SectionTitle>
                 <Stagger className="interest-grid">
@@ -119,6 +130,7 @@ function App() {
 
         </main>
         <Footer />
+        <ProjectDialog project={selected} onClose={() => setSelected(null)} triggerRef={trigger} />
     </>;
 }
 

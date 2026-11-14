@@ -21,7 +21,9 @@ export default function Header({ activeSection = '' }) {
     { id: 'inicio', label: 'Inicio' },
     { id: 'sobre-mi', label: 'Sobre mí' },
     { id: 'tecnologias', label: 'Tecnologías' },
+    { id: 'proyectos', label: 'Proyectos' },
     { id: 'experiencia', label: 'Experiencia' },
+    { id: 'cursos', label: 'Cursos' },
     { id: 'intereses', label: 'Intereses' },
   ];
   const isHome = path === '/';
@@ -36,6 +38,7 @@ export default function Header({ activeSection = '' }) {
   return (
     <div className={isHome ? "site-navigation site-navigation--home" : "site-navigation"}>
     <header className="header">
+      <div className="content-container header-inner">
       <Brand name={appearance.brand} href="/" />
       <nav id="portfolio-navigation" className={menu ? 'open' : ''} aria-label="Navegación principal">
         {navItems.map((item) => (
@@ -51,7 +54,7 @@ export default function Header({ activeSection = '' }) {
         ))}
       </nav>
       <MagneticButton className="nav-cta" href="/contacto">
-        Hablemos <ArrowUpRight size={15} />
+        <span className="nav-label">Hablemos</span> <ArrowUpRight size={15} />
       </MagneticButton>
       <button
         className="menu-toggle"
@@ -62,16 +65,15 @@ export default function Header({ activeSection = '' }) {
       >
         {menu ? <X /> : <Menu />}
       </button>
+      </div>
     </header>
     {isHome && (
       <nav className="home-navigation" aria-label="Secciones de Home">
-        <span className="home-navigation-caption" aria-hidden="true"><span /> EN ESTA PÁGINA</span>
-        <div className="home-navigation-links">
-          {sections.map((section, index) => {
+        <div className="content-container home-navigation-links">
+          {sections.map((section) => {
             const current = (activeSection || 'inicio') === section.id;
             return (
               <a key={section.id} href={'#' + section.id} aria-current={current ? 'location' : undefined}>
-                <small aria-hidden="true">{String(index + 1).padStart(2, '0')}</small>
                 {section.label}
                 {current && <m.span className="home-navigation-indicator" layoutId="home-section-indicator" transition={{ type: 'spring', stiffness: 360, damping: 34 }} />}
               </a>

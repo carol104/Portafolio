@@ -39,6 +39,42 @@ test('page navigation points to dedicated routes and Home alone has section navi
  }
 });
 
+test('Home previews limit cards and link to complete catalogs without limiting dedicated pages',async()=>{
+ const passthrough=({children})=>React.createElement('div',null,children);
+ const defaultExport=fn=>({__esModule:true,default:fn});
+ const button=defaultExport(({children,href})=>React.createElement('a',{href},children));
+ const heading=defaultExport(passthrough);
+ const {default:Projects}=await component('ProjectsSection.jsx',{
+  'framer-motion':{AnimatePresence:passthrough},
+  './SectionHeading':heading,
+  './ProjectCard':defaultExport(({project})=>React.createElement('article',{'data-project':project.id},project.title)),
+  './MagneticButton':button,
+  '../motion':{m:{div:passthrough}},
+  '../portfolio':await import('../portfolio.js'),
+ });
+ const projects=Array.from({length:6},(_,i)=>({id:`project-${i}`,title:`Project ${i}`,category:'Personal',tech:[]}));
+ for(const preview of [true,false]){
+  const html=renderToStaticMarkup(React.createElement(Projects,{projects,preview}));
+  assert.equal([...html.matchAll(/data-project=/g)].length,preview?4:6);
+  if(preview)assert.match(html,/href="\/proyectos"/);
+ }
+ const {default:Courses}=await component('../Courses.jsx',{
+  './components/SectionHeading':heading,
+  './components/ExternalLink':button,
+  './components/TechnologyTags':defaultExport(()=>null),
+  './components/SpotlightCard':defaultExport(passthrough),
+  './components/PlatformLogo':defaultExport(()=>null),
+  './components/MagneticButton':button,
+  './motion':{Stagger:passthrough,fadeUp:{}},
+ });
+ const courses=Array.from({length:5},(_,i)=>({id:`course-${i}`,title:`Course ${i}`,kind:'Curso'}));
+ for(const preview of [true,false]){
+  const html=renderToStaticMarkup(React.createElement(Courses,{courses,preview}));
+  assert.equal([...html.matchAll(/class="course-title"/g)].length,preview?2:5);
+  if(preview)assert.match(html,/href="\/cursos"/);
+ }
+});
+
 test('professional links in both header and contact open a separate tab safely',async()=>{
  const anchor=await component('ExternalLink.jsx');
  const {default:SocialLinks}=await component('SocialLinks.jsx',{'./ExternalLink':anchor});

@@ -96,7 +96,7 @@ export default function Courses({ courses, preview = false }) {
       {preview && (
         <div className="section-more-action">
           <MagneticButton className="button secondary button-more" href="/cursos">
-            Ver más cursos y certificaciones <ArrowUpRight size={17} />
+            Ver más cursos <ArrowUpRight size={17} />
           </MagneticButton>
         </div>
       )}

@@ -14,8 +14,7 @@ export default function ProjectsSection({ projects, onOpen, preview = false }) {
   const techs = useMemo(() => projectTechOptions(allProjects), [allProjects]);
   const filtered = useMemo(() => filterProjects(allProjects, category, tech), [allProjects, category, tech]);
 
-  // En la vista previa (página principal), solo dejamos 2 proyectos
-  const displayed = preview ? allProjects.slice(0, 2) : filtered;
+  const displayed = preview ? allProjects.slice(0, 4) : filtered;
 
   return (
     <section id="proyectos" className="section projects">

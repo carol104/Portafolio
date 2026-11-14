@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ArrowUpRight, ArrowDown, Download, MapPin, Check, Layers, Terminal, Database, Compass, Gamepad2, Music2, Lightbulb, Code2, Camera, Binoculars, Braces } from 'lucide-react';
 import { ContentProvider, useContent } from './ContentContext';
 import { RouterProvider, useRouter } from './router';
-import Courses from './Courses';
 import './public-content.css';
 import './motion.css';
 const Admin = lazy(() => import('./Admin'));
@@ -12,28 +11,33 @@ import './styles.css';
 import './interface.css';
 import SectionTitle from './components/SectionHeading';
 import SocialLinks from './components/SocialLinks';
-import ContactForm from './components/ContactForm';
-import ProjectDialog from './components/ProjectDialog';
-import ProjectsSection from './components/ProjectsSection';
 import MagneticButton from './components/MagneticButton';
 import SpotlightCard from './components/SpotlightCard';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProjectsPage from './ProjectsPage';
 import CoursesPage from './CoursesPage';
+import ContactPage from './ContactPage';
 import { MotionRoot, Reveal, Stagger, fadeUp, m } from './motion';
 
 const interestIcons = { terminal: Terminal, database: Database, compass: Compass, music: Music2, game: Gamepad2, idea: Lightbulb, camera: Camera, bird: Binoculars };
 
 function App() {
-    const { profile, projects, experience, courses, interests, appearance } = useContent();
-    const [active, setActive] = useState('inicio'), [selected, setSelected] = useState(null);
-    const trigger = useRef(null);
-    useEffect(() => { const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id) }), { rootMargin: '-15% 0px -60% 0px' }); document.querySelectorAll('section[id]').forEach(e => obs.observe(e)); return () => obs.disconnect() }, [courses]);
-    function openProject(project, element) {
-        trigger.current = element;
-        setSelected(project);
-    }
+    const { profile, experience, interests, appearance } = useContent();
+    const [active, setActive] = useState('inicio');
+    useEffect(() => {
+        const sections = [...document.querySelectorAll('main section[id]')];
+        let frame;
+        const update = () => {
+            const boundary = 230;
+            const current = sections.filter(section => section.getBoundingClientRect().top <= boundary).at(-1);
+            setActive(current?.id || 'inicio');
+        };
+        const onScroll = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(update); };
+        update();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(frame); };
+    }, []);
     const headline = appearance.headline.split('\n');
     return <>
         <a href="#contenido" className="skip-link">Saltar al contenido</a>
@@ -47,7 +51,7 @@ function App() {
                     <m.h1 variants={fadeUp}>{headline.map((line, index) => <span className={'headline-line ' + (index === 1 ? 'headline-accent' : 'headline-plain')} key={index}>{line}</span>)}</m.h1>
                     <m.p className="hero-description" variants={fadeUp}>{profile.role}. {appearance.summary}</m.p>
                     <m.div className="hero-actions" variants={fadeUp}>
-                        <MagneticButton className="button primary" href="#proyectos">Explorar proyectos <ArrowUpRight size={18} /></MagneticButton>
+                        <MagneticButton className="button primary" href="/proyectos">Explorar proyectos <ArrowUpRight size={18} /></MagneticButton>
                         <MagneticButton className="button secondary" href="/api/resume" target="_blank" rel="noreferrer" aria-label="Ver y descargar la hoja de vida en PDF">
                             <Download size={17} /> Ver / descargar CV
                         </MagneticButton>
@@ -94,7 +98,6 @@ function App() {
                     </Reveal>
                 </div>
             </section>
-            <ProjectsSection projects={projects} onOpen={openProject} preview={true} />
             <section id="experiencia" className="section experience">
                 <Reveal className="experience-intro">
                     <p className="eyebrow"><span>03 /</span> EL CAMINO RECORRIDO</p>
@@ -104,7 +107,6 @@ function App() {
                 </Reveal>
                 <div className="timeline">{experience.map((e, i) => <Reveal as="article" key={e.id} delay={i * 0.06}><span className="timeline-node" /><div className="timeline-top"><small>{e.type}</small><span>{String(i + 1).padStart(2, '0')}</span></div><h3>{e.title}</h3><h4>{e.place}</h4><p>{e.text}</p></Reveal>)}</div>
             </section>
-            <Courses courses={courses} preview={true} />
             <section id="intereses" className="section interests">
                 <SectionTitle number="05" kicker="MÁS ALLÁ DEL CÓDIGO">Hobbies e <span>intereses técnicos.</span></SectionTitle>
                 <Stagger className="interest-grid">
@@ -114,20 +116,9 @@ function App() {
                     })}
                 </Stagger>
             </section>
-            <section id="contacto" className="section contact">
-                <Reveal className="contact-copy">
-                    <p className="eyebrow"><span>06 /</span> EL SIGUIENTE PASO</p>
-                    <h2>Las grandes ideas<br />empiezan con un<br /><span>hola.</span><span className="contact-star">✳</span></h2>
-                    <p>¿Tienes un proyecto en mente o una oportunidad para colaborar? Me encantará conocerla.</p>
-                    {profile.email && <a className="contact-email" href={'mailto:' + profile.email}>{profile.email}<ArrowUpRight size={22} /></a>}
-                    <SocialLinks profile={profile}/>
-                    <p className="profile-alignment">El nombre, el rol y los enlaces de esta página están pensados para coincidir con GitHub y LinkedIn.</p>
-                </Reveal>
-                <ContactForm/>
-            </section>
+
         </main>
         <Footer />
-        <ProjectDialog project={selected} onClose={()=>setSelected(null)} triggerRef={trigger}/>
     </>;
 }
 
@@ -136,6 +127,9 @@ function PageRouter() {
 
     if (path === '/proyectos') {
         return <ProjectsPage />;
+    }
+    if (path === '/contacto') {
+        return <ContactPage />;
     }
     if (path === '/cursos') {
         return <CoursesPage />;

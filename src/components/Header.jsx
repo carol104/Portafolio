@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 import Brand from './Brand';
 import MagneticButton from './MagneticButton';
 import { useContent } from '../ContentContext';
 import { useRouter } from '../router';
+import { m } from '../motion';
 
 export default function Header({ activeSection = '' }) {
   const { appearance } = useContent();
@@ -11,47 +12,45 @@ export default function Header({ activeSection = '' }) {
   const [menu, setMenu] = useState(false);
 
   const navItems = [
-    { id: 'sobre-mi', label: 'Sobre mí', hash: 'sobre-mi' },
-    { id: 'tecnologias', label: 'Tecnologías', hash: 'tecnologias' },
-    { id: 'proyectos', label: 'Proyectos', path: '/proyectos' },
-    { id: 'experiencia', label: 'Experiencia', hash: 'experiencia' },
-    { id: 'cursos', label: 'Cursos', path: '/cursos' },
-    { id: 'intereses', label: 'Intereses', hash: 'intereses' },
-    { id: 'contacto', label: 'Contacto', hash: 'contacto' },
+    { label: 'Home', path: '/' },
+    { label: 'Proyectos', path: '/proyectos' },
+    { label: 'Cursos', path: '/cursos' },
+    { label: 'Contacto', path: '/contacto' },
   ];
-
+  const sections = [
+    { id: 'inicio', label: 'Inicio' },
+    { id: 'sobre-mi', label: 'Sobre mí' },
+    { id: 'tecnologias', label: 'Tecnologías' },
+    { id: 'experiencia', label: 'Experiencia' },
+    { id: 'intereses', label: 'Intereses' },
+  ];
   const isHome = path === '/';
+  useEffect(() => { setMenu(false); }, [path]);
+  useEffect(() => {
+    if (!menu) return;
+    const close = (event) => { if (event.key === 'Escape') setMenu(false); };
+    document.addEventListener('keydown', close);
+    return () => document.removeEventListener('keydown', close);
+  }, [menu]);
 
   return (
+    <div className={isHome ? "site-navigation site-navigation--home" : "site-navigation"}>
     <header className="header">
       <Brand name={appearance.brand} href="/" />
       <nav id="portfolio-navigation" className={menu ? 'open' : ''} aria-label="Navegación principal">
-        {navItems.map((item) => {
-          let href;
-          let isActive = false;
-
-          if (item.path) {
-            href = item.path;
-            isActive = path === item.path || (isHome && activeSection === item.id);
-          } else {
-            href = isHome ? '#' + item.hash : '/#' + item.hash;
-            isActive = isHome && activeSection === item.hash;
-          }
-
-          return (
-            <a
-              key={item.id}
-              href={href}
-              className={isActive ? 'active' : ''}
-              aria-current={isActive ? 'location' : undefined}
-              onClick={() => setMenu(false)}
-            >
-              <span className="nav-label">{item.label}</span>
-            </a>
-          );
-        })}
+        {navItems.map((item) => (
+          <a
+            key={item.path}
+            href={item.path}
+            className={path === item.path ? 'active' : ''}
+            aria-current={path === item.path ? 'page' : undefined}
+            onClick={() => setMenu(false)}
+          >
+            <span className="nav-label">{item.label}</span>
+          </a>
+        ))}
       </nav>
-      <MagneticButton className="nav-cta" href={isHome ? '#contacto' : '/#contacto'}>
+      <MagneticButton className="nav-cta" href="/contacto">
         Hablemos <ArrowUpRight size={15} />
       </MagneticButton>
       <button
@@ -64,6 +63,24 @@ export default function Header({ activeSection = '' }) {
         {menu ? <X /> : <Menu />}
       </button>
     </header>
+    {isHome && (
+      <nav className="home-navigation" aria-label="Secciones de Home">
+        <span className="home-navigation-caption" aria-hidden="true"><span /> EN ESTA PÁGINA</span>
+        <div className="home-navigation-links">
+          {sections.map((section, index) => {
+            const current = (activeSection || 'inicio') === section.id;
+            return (
+              <a key={section.id} href={'#' + section.id} aria-current={current ? 'location' : undefined}>
+                <small aria-hidden="true">{String(index + 1).padStart(2, '0')}</small>
+                {section.label}
+                {current && <m.span className="home-navigation-indicator" layoutId="home-section-indicator" transition={{ type: 'spring', stiffness: 360, damping: 34 }} />}
+              </a>
+            );
+          })}
+        </div>
+      </nav>
+    )}
+    </div>
   );
 }
 

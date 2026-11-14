@@ -16,6 +16,29 @@ async function component(filename,dependencies={}){
  return module.exports;
 }
 
+test('page navigation points to dedicated routes and Home alone has section navigation',async()=>{
+ for(const path of ['/','/proyectos','/cursos','/contacto']){
+  const {default:Header}=await component('Header.jsx',{
+   './Brand':{__esModule:true,default:()=>React.createElement('a',{href:'/'},'Portfolio')},
+   './MagneticButton':{__esModule:true,default:({children,...props})=>React.createElement('a',props,children)},
+   '../ContentContext':{useContent:()=>({appearance:{brand:'Portfolio'}})},
+   '../router':{useRouter:()=>({path})},
+   '../motion':{m:{span:({layoutId,transition,...props})=>React.createElement('span',props)}},
+  });
+  const html=renderToStaticMarkup(React.createElement(Header,{activeSection:'experiencia'}));
+  const primary=html.match(/<nav id="portfolio-navigation"[\s\S]*?<\/nav>/)[0];
+  assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(match=>match[1]),['/','/proyectos','/cursos','/contacto']);
+  assert.match(primary,new RegExp(`href="${path}"[^>]*aria-current="page"`));
+  assert.equal(html.includes('aria-label="Secciones de Home"'),path==='/');
+  assert.match(html,/href="\/contacto"/);
+  if(path==='/'){
+   assert.match(html,/href="#experiencia" aria-current="location"/);
+   for(const id of ['inicio','sobre-mi','tecnologias','experiencia','intereses'])assert.ok(html.includes(`href="#${id}"`));
+   assert.ok(html.includes('Sobre mí'));assert.ok(html.includes('Tecnologías'));
+  }
+ }
+});
+
 test('professional links in both header and contact open a separate tab safely',async()=>{
  const anchor=await component('ExternalLink.jsx');
  const {default:SocialLinks}=await component('SocialLinks.jsx',{'./ExternalLink':anchor});

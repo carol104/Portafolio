@@ -4,23 +4,35 @@ import ExternalLink from './components/ExternalLink';
 import TechnologyTags from './components/TechnologyTags';
 import SpotlightCard from './components/SpotlightCard';
 import PlatformLogo from './components/PlatformLogo';
+import MagneticButton from './components/MagneticButton';
 import { fadeUp, Stagger } from './motion';
 
 const icons = { Curso: GraduationCap, Certificación: Award, Evento: CalendarDays };
 
-export default function Courses({ courses }) {
-  const items = courses || [];
+export default function Courses({ courses, preview = false }) {
+  const allCourses = courses || [];
+  const items = preview ? allCourses.slice(0, 2) : allCourses;
+
   return (
     <section id="cursos" className="section courses-section">
-      <SectionHeading number="04" kicker="APRENDER EN MOVIMIENTO" text="Cursos, certificaciones, hackathones y eventos tecnológicos que forman parte de mi recorrido.">
+      <SectionHeading
+        number="04"
+        kicker="APRENDER EN MOVIMIENTO"
+        text="Cursos, certificaciones, hackathones y eventos tecnológicos que forman parte de mi recorrido."
+      >
         Formación, credenciales <span>y comunidad.</span>
       </SectionHeading>
+
       {items.length ? (
         <Stagger className="course-timeline" as="div">
           {items.map((course) => {
             const Icon = icons[course.kind] || GraduationCap;
             return (
-              <SpotlightCard key={course.id} className={`course-card course-${(course.kind || 'Curso').toLowerCase()}`} variants={fadeUp}>
+              <SpotlightCard
+                key={course.id}
+                className={`course-card course-${(course.kind || 'Curso').toLowerCase()}`}
+                variants={fadeUp}
+              >
                 <span className="course-node" aria-hidden="true"/>
                 
                 {/* Espacio limpio para imagen o banner */}
@@ -79,6 +91,14 @@ export default function Courses({ courses }) {
         </Stagger>
       ) : (
         <p className="example-note">Añade cursos, certificaciones y eventos desde el panel de administración.</p>
+      )}
+
+      {preview && (
+        <div className="section-more-action">
+          <MagneticButton className="button secondary button-more" href="/cursos">
+            Ver más cursos y certificaciones <ArrowUpRight size={17} />
+          </MagneticButton>
+        </div>
       )}
     </section>
   );

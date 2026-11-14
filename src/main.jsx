@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowUpRight, ArrowDown, Download, Menu, X, MapPin, Check, Layers, Terminal, Database, Heart, Compass, Gamepad2, Music2, Lightbulb, Code2, Camera, Binoculars, Braces } from 'lucide-react';
+import { ArrowUpRight, ArrowDown, Download, MapPin, Check, Layers, Terminal, Database, Compass, Gamepad2, Music2, Lightbulb, Code2, Camera, Binoculars, Braces } from 'lucide-react';
 import { ContentProvider, useContent } from './ContentContext';
+import { RouterProvider, useRouter } from './router';
 import Courses from './Courses';
 import './public-content.css';
 import './motion.css';
@@ -11,37 +12,32 @@ import './styles.css';
 import './interface.css';
 import SectionTitle from './components/SectionHeading';
 import SocialLinks from './components/SocialLinks';
-import Brand from './components/Brand';
 import ContactForm from './components/ContactForm';
 import ProjectDialog from './components/ProjectDialog';
 import ProjectsSection from './components/ProjectsSection';
 import MagneticButton from './components/MagneticButton';
 import SpotlightCard from './components/SpotlightCard';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import ProjectsPage from './ProjectsPage';
+import CoursesPage from './CoursesPage';
 import { MotionRoot, Reveal, Stagger, fadeUp, m } from './motion';
 
 const interestIcons = { terminal: Terminal, database: Database, compass: Compass, music: Music2, game: Gamepad2, idea: Lightbulb, camera: Camera, bird: Binoculars };
 
 function App() {
     const { profile, projects, experience, courses, interests, appearance } = useContent();
-    const [menu, setMenu] = useState(false), [active, setActive] = useState('inicio'), [selected, setSelected] = useState(null);
+    const [active, setActive] = useState('inicio'), [selected, setSelected] = useState(null);
     const trigger = useRef(null);
     useEffect(() => { const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id) }), { rootMargin: '-15% 0px -60% 0px' }); document.querySelectorAll('section[id]').forEach(e => obs.observe(e)); return () => obs.disconnect() }, [courses]);
     function openProject(project, element) {
         trigger.current = element;
         setSelected(project);
     }
-    const nav = [['sobre-mi', 'Sobre mí'], ['tecnologias', 'Tecnologías'], ['proyectos', 'Proyectos'], ['experiencia', 'Experiencia'], ['cursos', 'Cursos'], ['intereses', 'Intereses'], ['contacto', 'Contacto']];
     const headline = appearance.headline.split('\n');
     return <>
         <a href="#contenido" className="skip-link">Saltar al contenido</a>
-        <header className="header">
-            <Brand name={appearance.brand}/>
-            <nav id="portfolio-navigation" className={menu ? 'open' : ''} aria-label="Navegación principal">
-                {nav.map(([id, label]) => <a key={id} href={'#' + id} className={active === id ? 'active' : ''} aria-current={active === id ? 'location' : undefined} onClick={() => setMenu(false)}>{label}</a>)}
-            </nav>
-            <MagneticButton className="nav-cta" href="#contacto">Hablemos <ArrowUpRight size={15} /></MagneticButton>
-            <button className="menu-toggle" onClick={() => setMenu(!menu)} aria-label={menu ? 'Cerrar menú' : 'Abrir menú'} aria-controls="portfolio-navigation" aria-expanded={menu}>{menu ? <X /> : <Menu />}</button>
-        </header>
+        <Header activeSection={active} />
         <main id="contenido">
             <section id="inicio" className="hero">
                 <div className="hero-grid" aria-hidden="true" />
@@ -98,7 +94,7 @@ function App() {
                     </Reveal>
                 </div>
             </section>
-            <ProjectsSection projects={projects} onOpen={openProject} />
+            <ProjectsSection projects={projects} onOpen={openProject} preview={true} />
             <section id="experiencia" className="section experience">
                 <Reveal className="experience-intro">
                     <p className="eyebrow"><span>03 /</span> EL CAMINO RECORRIDO</p>
@@ -108,7 +104,7 @@ function App() {
                 </Reveal>
                 <div className="timeline">{experience.map((e, i) => <Reveal as="article" key={e.id} delay={i * 0.06}><span className="timeline-node" /><div className="timeline-top"><small>{e.type}</small><span>{String(i + 1).padStart(2, '0')}</span></div><h3>{e.title}</h3><h4>{e.place}</h4><p>{e.text}</p></Reveal>)}</div>
             </section>
-            <Courses courses={courses} />
+            <Courses courses={courses} preview={true} />
             <section id="intereses" className="section interests">
                 <SectionTitle number="05" kicker="MÁS ALLÁ DEL CÓDIGO">Hobbies e <span>intereses técnicos.</span></SectionTitle>
                 <Stagger className="interest-grid">
@@ -130,13 +126,35 @@ function App() {
                 <ContactForm/>
             </section>
         </main>
-        <footer className="footer">
-            <Brand name={appearance.brand}/>
-            <p>Hecho con intención, café y <Heart size={12} /> React.</p>
-            <a href="#inicio">Volver arriba <ArrowUpRight size={15} /></a>
-            <small>© {new Date().getFullYear()} {profile.name}{profile.isExample ? ' · Contenido de ejemplo' : ''} <a className="admin-entry" href="/admin">Administrar</a></small>
-        </footer>
+        <Footer />
         <ProjectDialog project={selected} onClose={()=>setSelected(null)} triggerRef={trigger}/>
     </>;
 }
-createRoot(document.getElementById('root')).render(location.pathname.startsWith('/admin') ? <Suspense fallback={<div className="public-loading">Abriendo tu espacio…</div>}><Admin /></Suspense> : <ContentProvider><MotionRoot><App /></MotionRoot></ContentProvider>);
+
+function PageRouter() {
+    const { path } = useRouter();
+
+    if (path === '/proyectos') {
+        return <ProjectsPage />;
+    }
+    if (path === '/cursos') {
+        return <CoursesPage />;
+    }
+    return <App />;
+}
+
+createRoot(document.getElementById('root')).render(
+    location.pathname.startsWith('/admin') ? (
+        <Suspense fallback={<div className="public-loading">Abriendo tu espacio…</div>}>
+            <Admin />
+        </Suspense>
+    ) : (
+        <ContentProvider>
+            <RouterProvider>
+                <MotionRoot>
+                    <PageRouter />
+                </MotionRoot>
+            </RouterProvider>
+        </ContentProvider>
+    )
+);

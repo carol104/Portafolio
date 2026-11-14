@@ -119,6 +119,19 @@ body { font-size: var(--font-body); line-height: 1.6; }
 .about-values { gap: 16px; }
 .education { align-items: flex-start; padding-top: 26px; }
 .education p { line-height: 1.7; }
+.portrait-scene { position: relative; min-width: 0; isolation: isolate; }
+.portrait-orbit { position: absolute; inset: -24px -18px 12px; border: 1px solid #75aaff14; border-radius: 50%; z-index: -1; transform: rotate(-14deg); }
+.portrait-orbit::after { content: ''; position: absolute; inset: 17px; border: 1px dashed #75aaff16; border-radius: inherit; }
+.portrait-cross { position: absolute; font: 22px Consolas, monospace; color: #86b4fc80; }
+.portrait-cross--top { top: -29px; left: 22px; }
+.portrait-cross--bottom { bottom: 16px; right: 2px; }
+.portrait-code { position: absolute; right: 16px; top: -18px; display: grid; place-items: center; width: 52px; height: 46px; border: 1px solid #799bce30; border-radius: 10px; background: #172844; color: #91bdff; box-shadow: 0 10px 25px #0003; transform: rotate(8deg); animation: float-label 7s ease-in-out infinite; }
+.portrait-note { display: flex; align-items: center; gap: 10px; padding: 18px 4px 0; color: #92acd0; font-size: var(--font-small); }
+.portrait-note > span:first-of-type { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; }
+.portrait-note-dot { width: 5px; height: 5px; background: #7edec0; border-radius: 50%; box-shadow: 0 0 10px #7edec040; }
+.portrait-note-line { height: 1px; flex: 1; margin-right: 22px; background: linear-gradient(90deg, #75aaff30, transparent); }
+.about-art.about-art--photo { height: clamp(360px, 34vw, 440px); max-width: none; box-shadow: 0 18px 48px #0003; }
+.about-portrait { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 38%; }
 .project-card > h3 { margin: 0; }
 .project-card > p { margin: 12px 0 18px; }
 .project-card { padding-bottom: 0; }

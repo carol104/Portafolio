@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowUpRight, ArrowDown, Download, MapPin, Check, Layers, Terminal, Database, Compass, Gamepad2, Music2, Lightbulb, Code2, Camera, Binoculars, Braces } from 'lucide-react';
+import { ArrowUpRight, ArrowDown, Download, MapPin, Check, Terminal, Database, Compass, Gamepad2, Music2, Lightbulb, Code2, Camera, Binoculars, Braces } from 'lucide-react';
 import { ContentProvider, useContent } from './ContentContext';
 import { RouterProvider, useRouter } from './router';
 import './public-content.css';
@@ -66,8 +66,8 @@ function App() {
                         </MagneticButton>
                     </m.div>
                     <m.div className="hero-bottom" variants={fadeUp}>
-                        <span><MapPin size={17}/>{profile.location}</span>
-                        <SocialLinks profile={profile} compact/>
+                        <span><MapPin size={17} />{profile.location}</span>
+                        <SocialLinks profile={profile} compact />
                     </m.div>
                 </m.div>
                 <div className="hero-visual" aria-hidden="true">
@@ -95,14 +95,18 @@ function App() {
                 <div className="hero-index">DISEÑO + CÓDIGO + PROPÓSITO</div>
             </section>
             <section id="sobre-mi" className="section about">
-                <SectionTitle number="01" kicker="UN POCO SOBRE MÍ">Detrás de cada línea,<br /><span>una persona curiosa.</span></SectionTitle>
+                <SectionTitle number="01" kicker="UN POCO SOBRE MÍ">Sobre mí<br /></SectionTitle>
                 <div className="about-grid">
-                    <Reveal className="about-art"><div className="initials">{profile.initials}<span>✳</span></div><div className="art-caption"><Code2 size={18} /><span>Construir también es<br /><b>una forma de explorar.</b></span><ArrowUpRight size={24} /></div><div className="art-coordinates">CREATIVIDAD × TECNOLOGÍA</div></Reveal>
+                    <Reveal className="about-art about-art--photo">
+                        <img className="about-portrait" src="/assets/yo.jpg" alt={`Retrato de ${profile.name}`} width="970" height="1296" loading="lazy" decoding="async" />
+                        <div className="art-caption"><Code2 size={18} /><span>Construir también es<br /><b>una forma de explorar.</b></span><ArrowUpRight size={24} /></div>
+                        <div className="art-coordinates">CREATIVIDAD × TECNOLOGÍA</div>
+                    </Reveal>
                     <Reveal className="about-content">
                         <p className="large-text">{profile.about}</p>
                         <p>{profile.objective}</p>
                         <div className="about-values"><span><Check size={15} /> Atención al detalle</span><span><Check size={15} /> Aprendizaje continuo</span><span><Check size={15} /> Trabajo en equipo</span><span><Check size={15} /> Soluciones con propósito</span></div>
-                        {profile.showEducation && <div className="education"><span className="education-icon"><Layers size={20} /></span><div><small>FORMACIÓN {profile.isExample && '· POR PERSONALIZAR'}</small><h3>{profile.education.title}</h3><p>{profile.education.institution} · {profile.education.period}</p></div></div>}
+                        {profile.showEducation && <div className="education"><img className="education-logo" src="/assets/uta.png" alt="Universidad Técnica de Ambato" width="447" height="169" loading="lazy" decoding="async" /><div><small>FORMACIÓN {profile.isExample && '· POR PERSONALIZAR'}</small><h3>{profile.education.title}</h3><p>{[profile.education.institution, profile.education.period].filter(Boolean).join(' · ')}</p></div></div>}
                     </Reveal>
                 </div>
             </section>

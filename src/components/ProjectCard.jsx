@@ -23,6 +23,7 @@ export default function ProjectCard({ project, index, onOpen }) {
         <span className="cover-arrow"><ArrowUpRight size={22} aria-hidden="true"/></span>
         {project.example && <span className="example-label">Concepto de ejemplo</span>}
       </button>
+      <div className="project-content">
       <div className="project-meta">
         <span>{project.type}</span>
         <small>{String(index + 1).padStart(2, '0')}</small>
@@ -35,6 +36,7 @@ export default function ProjectCard({ project, index, onOpen }) {
       {isTeamProject(project) && (
         <p className="project-credits"><Users size={15} aria-hidden="true"/> {project.collaborators?.trim() || 'Añade créditos de colaboradores'}</p>
       )}
+      </div>
     </SpotlightCard>
   );
 }

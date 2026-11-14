@@ -32,7 +32,7 @@ export default function Header({ activeSection = '' }) {
 
           if (item.path) {
             href = item.path;
-            isActive = path === item.path;
+            isActive = path === item.path || (isHome && activeSection === item.id);
           } else {
             href = isHome ? '#' + item.hash : '/#' + item.hash;
             isActive = isHome && activeSection === item.hash;

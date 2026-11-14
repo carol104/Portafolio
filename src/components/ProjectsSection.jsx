@@ -19,7 +19,6 @@ export default function ProjectsSection({ projects, onOpen, preview = false }) {
   return (
     <section id="proyectos" className="section projects">
       <SectionTitle
-        number="02"
         kicker="DEL CÓDIGO A LA REALIDAD"
         text="Una selección de ideas convertidas en interfaces. Cada proyecto, una nueva forma de resolver un problema."
       >

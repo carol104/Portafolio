@@ -8,6 +8,9 @@ services:
       DATABASE_URL: postgres://portfolio:${POSTGRES_PASSWORD:?Configura POSTGRES_PASSWORD en .env}@db:5432/portfolio
       TRUST_PROXY: ${TRUST_PROXY:-0}
       ADMIN_SETUP_TOKEN: ${ADMIN_SETUP_TOKEN:-}
+      COURSE_IMAGES_DIR: /app/course-images
+    volumes:
+      - ./public/assets/imagenes_cursos:/app/course-images
     depends_on:
       db:
         condition: service_healthy

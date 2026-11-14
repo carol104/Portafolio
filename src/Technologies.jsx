@@ -12,8 +12,8 @@ export default function Technologies() {
   const { technologyGroups } = useContent();
   return (
     <section id="tecnologias" className="section technology-section" aria-labelledby="technology-title">
-      <SectionHeading id="technology-title" number="</>" kicker="MI CAJA DE HERRAMIENTAS" text="Lenguajes, frameworks y herramientas que he utilizado para dar forma a mis proyectos.">
-        Tecnologías con las<br/>que <span>trabajo.</span>
+      <SectionHeading id="technology-title" kicker="MI CAJA DE HERRAMIENTAS" text="Lenguajes, frameworks y herramientas que he utilizado para dar forma a mis proyectos.">
+        Tecnologías con las<br />que <span>trabajo.</span>
       </SectionHeading>
       <Stagger className="technology-grid">
         {technologyGroups.map((group) => {

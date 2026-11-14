@@ -77,36 +77,40 @@ function App() {
                     <div className="code-window">
                         <div className="code-top"><div><i /><i /><i /></div><span>about-me.js</span><Code2 size={15} /></div>
                         <div className="code-body">
-                            <div className="code-line"><small>01</small><span><em>const</em> developer <em>=</em> {'{'}</span></div>
-                            <div className="code-line"><small>02</small><span>&nbsp; name: <b>'{profile.name}'</b>,</span></div>
-                            <div className="code-line"><small>03</small><span>&nbsp; role: <b>'{profile.role}'</b>,</span></div>
-                            <div className="code-line"><small>04</small><span>&nbsp; stack: [<b>'React'</b>, <b>'Node.js'</b>],</span></div>
-                            <div className="code-line"><small>05</small><span>&nbsp; mindset: <b>'Siempre aprendiendo'</b>,</span></div>
-                            <div className="code-line"><small>06</small><span>&nbsp; coffee: <strong>true</strong></span></div>
-                            <div className="code-line"><small>07</small><span>{'};'}</span></div>
-                            <div className="code-line comment"><small>08</small><span>// Menos límites. Más posibilidades.</span></div>
-                            <div className="code-line"><small>09</small><span>buildSomething<em>(</em><b>'increíble'</b><em>)</em>;<i className="cursor" /></span></div>
+                            <div className="code-line"><span><em>const</em> developer <em>=</em> {'{'}</span></div>
+                            <div className="code-line"><span>&nbsp; name: <b>'{profile.name}'</b>,</span></div>
+                            <div className="code-line"><span>&nbsp; role: <b>'{profile.role}'</b>,</span></div>
+                            <div className="code-line"><span>&nbsp; stack: [<b>'React'</b>, <b>'Node.js'</b>],</span></div>
+                            <div className="code-line"><span>&nbsp; coffee: <strong>true</strong></span></div>
+                            <div className="code-line"><span>{'};'}</span></div>
+                            <div className="code-line comment"><span>// Menos límites. Más posibilidades.</span></div>
+                            <div className="code-line"><span>buildSomething<em>(</em><b>'increíble'</b><em>)</em>;<i className="cursor" /></span></div>
                         </div>
                         <div className="code-status"><span><span /> listo para construir</span><span>JavaScript &nbsp; UTF-8</span></div>
                     </div>
                     <div className="float-label label-backend"><Database size={18} /><div>Ideas sólidas.<small>De la interfaz a los datos.</small></div><span className="check-circle"><Check size={12} /></span></div>
                 </div>
-                <a href="#sobre-mi" className="scroll-cue"><span>SCROLL PARA DESCUBRIR</span><ArrowDown size={15} /></a>
+                <a href="#sobre-mi" className="scroll-cue"><span>DESCUBRE MÁS</span><ArrowDown size={15} /></a>
                 <div className="hero-index">DISEÑO + CÓDIGO + PROPÓSITO</div>
             </section>
             <section id="sobre-mi" className="section about">
-                <SectionTitle number="01" kicker="UN POCO SOBRE MÍ">Sobre mí<br /></SectionTitle>
+                <SectionTitle>Sobre mí</SectionTitle>
                 <div className="about-grid">
-                    <Reveal className="about-art about-art--photo">
-                        <img className="about-portrait" src="/assets/yo.jpg" alt={`Retrato de ${profile.name}`} width="970" height="1296" loading="lazy" decoding="async" />
-                        <div className="art-caption"><Code2 size={18} /><span>Construir también es<br /><b>una forma de explorar.</b></span><ArrowUpRight size={24} /></div>
-                        <div className="art-coordinates">CREATIVIDAD × TECNOLOGÍA</div>
+                    <Reveal className="portrait-scene">
+                        <div className="portrait-orbit" aria-hidden="true" />
+                        <span className="portrait-cross portrait-cross--top" aria-hidden="true">+</span>
+                        <span className="portrait-cross portrait-cross--bottom" aria-hidden="true">+</span>
+                        <div className="about-art about-art--photo">
+                            <img className="about-portrait" src="/assets/yo.jpg" alt={`Retrato de ${profile.name}`} width="970" height="1296" loading="lazy" decoding="async" />
+                        </div>
+                        <span className="portrait-code" aria-hidden="true"><Braces size={23} /></span>
+                        <div className="portrait-note"><Code2 size={17} aria-hidden="true" /><span>Siempre aprendiendo<span className="portrait-note-dot" aria-hidden="true" /></span><span className="portrait-note-line" aria-hidden="true" /></div>
                     </Reveal>
                     <Reveal className="about-content">
                         <p className="large-text">{profile.about}</p>
                         <p>{profile.objective}</p>
                         <div className="about-values"><span><Check size={15} /> Atención al detalle</span><span><Check size={15} /> Aprendizaje continuo</span><span><Check size={15} /> Trabajo en equipo</span><span><Check size={15} /> Soluciones con propósito</span></div>
-                        {profile.showEducation && <div className="education"><img className="education-logo" src="/assets/uta.png" alt="Universidad Técnica de Ambato" width="447" height="169" loading="lazy" decoding="async" /><div><small>FORMACIÓN {profile.isExample && '· POR PERSONALIZAR'}</small><h3>{profile.education.title}</h3><p>{[profile.education.institution, profile.education.period].filter(Boolean).join(' · ')}</p></div></div>}
+                        {profile.showEducation && <div className="education"><div><small>FORMACIÓN {profile.isExample && '· POR PERSONALIZAR'}</small><h3>{profile.education.title}</h3><p>{[profile.education.institution, profile.education.period].filter(Boolean).join(' · ')}</p></div></div>}
                     </Reveal>
                 </div>
             </section>
@@ -114,7 +118,7 @@ function App() {
             <ProjectsSection projects={projects} onOpen={openProject} preview />
             <section id="experiencia" className="section experience">
                 <Reveal className="experience-intro">
-                    <p className="eyebrow"><span>03 /</span> EL CAMINO RECORRIDO</p>
+                    <p className="eyebrow">EL CAMINO RECORRIDO</p>
                     <h2>Aprender.<br />Construir.<br /><span>Evolucionar.</span></h2>
                     <p>Cada reto aporta una nueva perspectiva. Aquí hay espacio para contar tu recorrido profesional.</p>
                     <MagneticButton href="/api/resume" target="_blank" rel="noreferrer" className="text-link" aria-label="Ver y descargar la hoja de vida en PDF">Ver hoja de vida <ArrowUpRight size={17} /></MagneticButton>
@@ -123,7 +127,7 @@ function App() {
             </section>
             <Courses courses={courses} preview />
             <section id="intereses" className="section interests">
-                <SectionTitle number="05" kicker="MÁS ALLÁ DEL CÓDIGO">Hobbies e <span>intereses técnicos.</span></SectionTitle>
+                <SectionTitle kicker="MÁS ALLÁ DEL CÓDIGO">Hobbies e <span>intereses técnicos.</span></SectionTitle>
                 <Stagger className="interest-grid">
                     {(interests.length ? interests : [{ id: 'placeholder', icon: 'idea', title: 'Añade un interés', description: 'Completa esta tarjeta desde el panel: hackatones, Supabase, IA, fotografía u observación de aves.' }]).map(item => {
                         const Icon = interestIcons[item.icon] || Lightbulb;

@@ -3,7 +3,9 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import pg from 'pg';
-import {readFile} from 'node:fs/promises';
+import {readFile,mkdtemp} from 'node:fs/promises';
+import path from 'node:path';
+import {tmpdir} from 'node:os';
 import {createApp} from './app.js';
 import {createContentStore} from './content-store.js';
 
@@ -16,7 +18,8 @@ test('admin setup, authentication, uploads, publication and persistence with Pos
  try{
   connection.pathname='/'+database;pool=new pg.Pool({connectionString:connection.href});
   await pool.query(await readFile(new URL('./schema.sql',import.meta.url),'utf8'));
-  const store=createContentStore(pool);await store.initialize();
+  const courseImagesPath=await mkdtemp(path.join(tmpdir(),'portfolio-course-images-'));
+  const store=createContentStore(pool,{courseImagesPath});await store.initialize();
   await t.test('expanded stack is added once and CI/CD is moved last without losing custom content',async()=>{
    const original=await store.read();const data=structuredClone(original.data);
    const added=['TypeScript','Vite','Tailwind CSS','MongoDB','Heroku','Railway'];
@@ -58,7 +61,7 @@ test('admin setup, authentication, uploads, publication and persistence with Pos
    await pool.query('UPDATE site_content SET data=$1::jsonb,revision=1 WHERE id=1',[JSON.stringify(original.data)]);
   });
   const setupToken='private-isolated-test-setup-code-123456789';
-  server=createApp({pool,contentStore:store,setupToken,production:true}).listen(0,'127.0.0.1');await new Promise(resolve=>server.once('listening',resolve));
+  server=createApp({pool,contentStore:store,setupToken,production:true,courseImagesPath}).listen(0,'127.0.0.1');await new Promise(resolve=>server.once('listening',resolve));
   const base=`http://127.0.0.1:${server.address().port}`;
   const request=async(path,{method='GET',data,cookie,csrf,origin=base}={})=>{const response=await fetch(base+path,{method,headers:{Origin:origin,...(data?{'Content-Type':'application/json'}:{}),...(cookie?{Cookie:cookie}:{}),...(csrf?{'X-CSRF-Token':csrf}:{})},...(data?{body:JSON.stringify(data)}:{})});const json=response.headers.get('content-type')?.includes('application/json')?await response.json():null;return {response,json}};
   const credentials={email:'admin@example.invalid',password:'Isolated admin test password!2026',setupToken};
@@ -78,6 +81,21 @@ test('admin setup, authentication, uploads, publication and persistence with Pos
    const reopened=createContentStore(pool);assert.equal((await reopened.read()).data.courses[0].id,'test-course');
   });
   await t.test('file uploads require login and validate file signatures',async()=>{const payload={filename:'preview.png',mime:'image/png',data:'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a73cAAAAASUVORK5CYII='};assert.equal((await request('/api/admin/media',{method:'POST',data:payload})).response.status,401);assert.equal((await request('/api/admin/media',{method:'POST',cookie,csrf,data:{...payload,data:Buffer.from('<script>bad</script>').toString('base64')}})).response.status,400);const upload=await request('/api/admin/media',{method:'POST',cookie,csrf,data:payload});assert.equal(upload.response.status,201);const image=await fetch(base+upload.json.url);assert.equal(image.status,200);assert.equal(image.headers.get('content-type'),'image/png');assert.equal(Buffer.from(await image.arrayBuffer()).toString('base64'),payload.data)});
+  await t.test('course banners are saved in their directory, served publicly and editable after publication',async()=>{
+   const payload={category:'course-image',filename:'../../mi curso.png',mime:'image/png',data:'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a73cAAAAASUVORK5CYII='};
+   const uploaded=await request('/api/admin/media',{method:'POST',cookie,csrf,data:payload});
+   assert.equal(uploaded.response.status,201);assert.match(uploaded.json.url,/^\/assets\/imagenes_cursos\/mi-curso-[a-f0-9-]+\.png$/);
+   const bytes=await readFile(path.join(courseImagesPath,path.basename(uploaded.json.url)));
+   assert.equal(bytes.toString('base64'),payload.data);
+   const image=await fetch(base+uploaded.json.url);assert.equal(image.status,200);assert.equal(Buffer.from(await image.arrayBuffer()).toString('base64'),payload.data);
+   const current=(await request('/api/admin/content',{cookie})).json;current.data.courses[0].image=uploaded.json.url;
+   assert.equal((await request('/api/admin/content',{method:'PUT',cookie,csrf,data:current})).response.status,200);
+   assert.equal((await request('/api/content')).json.data.courses[0].image,uploaded.json.url);
+   const duplicate=await request('/api/admin/media',{method:'POST',cookie,csrf,data:payload});assert.notEqual(duplicate.json.url,uploaded.json.url);
+   assert.equal((await fetch(base+'/assets/imagenes_cursos/missing.png')).status,404);
+   const pdf={...payload,mime:'application/pdf',data:Buffer.from('%PDF-1.4').toString('base64')};
+   assert.equal((await request('/api/admin/media',{method:'POST',cookie,csrf,data:pdf})).response.status,400);
+  });
   await t.test('private messages are unavailable without an admin session',async()=>{assert.equal((await request('/api/admin/messages')).response.status,401);await pool.query("INSERT INTO contact_messages(name,email,subject,message,consent_at) VALUES('Prueba','test@example.invalid','Proyecto','Mensaje privado de prueba',NOW())");assert.equal((await request('/api/admin/messages',{cookie})).json.messages.length,1)});
   await t.test('logout revokes the server-side session',async()=>{assert.equal((await request('/api/admin/logout',{method:'POST',cookie,csrf})).response.status,200);assert.equal((await request('/api/admin/content',{cookie})).response.status,401)});
   await t.test('password change invalidates previous sessions',async()=>{const login=await request('/api/admin/login',{method:'POST',data:credentials});assert.equal(login.response.status,200);const oldCookie=login.response.headers.get('set-cookie').split(';')[0];const change=await request('/api/admin/password',{method:'POST',cookie:oldCookie,csrf:login.json.csrfToken,data:{current:credentials.password,password:'Replacement private test password 2026!'}});assert.equal(change.response.status,200);assert.equal((await request('/api/admin/content',{cookie:oldCookie})).response.status,401);const newCookie=change.response.headers.get('set-cookie').split(';')[0];assert.equal((await request('/api/admin/content',{cookie:newCookie})).response.status,200)});

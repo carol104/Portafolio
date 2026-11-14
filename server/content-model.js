@@ -7,7 +7,7 @@ const url=z.string().max(2048).refine(value=>{
  if(!value)return true;
  try{const parsed=new URL(value);return ['http:','https:'].includes(parsed.protocol)&&!parsed.username&&!parsed.password}catch{return false}
 },'Usa un enlace completo con https://');
-const media=z.string().max(2048).refine(value=>!value||/^\/api\/media\/[a-f0-9-]{36}$/.test(value)||url.safeParse(value).success,'Usa una imagen subida o un enlace http(s) válido');
+const media=z.string().max(2048).refine(value=>!value||/^\/api\/media\/[a-f0-9-]{36}$/.test(value)||/^\/assets\/imagenes_cursos\/[a-zA-Z0-9_-]+\.(png|jpg|jpeg|webp)$/.test(value)||url.safeParse(value).success,'Usa una imagen subida o un enlace http(s) válido');
 const base={id:z.string().min(1).max(80),visible:z.boolean()};
 const courseSchema = z.object({
  ...base,

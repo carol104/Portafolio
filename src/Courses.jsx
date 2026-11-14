@@ -16,7 +16,6 @@ export default function Courses({ courses, preview = false }) {
   return (
     <section id="cursos" className="section courses-section">
       <SectionHeading
-        number="04"
         kicker="APRENDER EN MOVIMIENTO"
         text="Cursos, certificaciones, hackathones y eventos tecnológicos que forman parte de mi recorrido."
       >

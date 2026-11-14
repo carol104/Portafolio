@@ -33,6 +33,8 @@ La base no expone puertos al exterior. Los mensajes se conservan en el volumen `
 
 ## Desarrollo
 
+Los banners de cursos se guardan en `public/assets/imagenes_cursos/` y se sirven desde `/assets/imagenes_cursos/`. El campo **Imagen o banner del curso** del panel guarda automáticamente las nuevas subidas en esa carpeta. Docker la monta como carpeta persistente: se conserva al reconstruir la aplicación. No coloques archivos originales en `dist`, porque es una carpeta generada. Los certificados, insignias y demás archivos mantienen su almacenamiento en PostgreSQL.
+
 Requiere Node.js 22 y PostgreSQL (o Docker).
 
 ```powershell

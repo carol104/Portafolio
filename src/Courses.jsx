@@ -73,8 +73,8 @@ export default function Courses({ courses, preview = false }) {
                 {course.tech?.length > 0 && <TechnologyTags items={course.tech}/>}
 
                 <div className="course-actions">
-                  {(course.certificate || course.url) && (
-                    <ExternalLink href={course.certificate || course.url} className="text-link">
+                  {/^\/api\/media\/[a-f0-9-]{36}$/.test(course.certificate || '') && (
+                    <ExternalLink href={course.certificate} className="text-link">
                       Ver certificado <ArrowUpRight size={18} aria-hidden="true"/>
                     </ExternalLink>
                   )}

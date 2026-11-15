@@ -68,9 +68,15 @@ test('Home previews limit cards and link to complete catalogs without limiting d
   './motion':{Stagger:passthrough,fadeUp:{}},
  });
  const courses=Array.from({length:5},(_,i)=>({id:`course-${i}`,title:`Course ${i}`,kind:'Curso'}));
+ courses[0].certificate='/api/media/11111111-2222-3333-4444-555555555555';
+ courses[1].certificate='https://example.com/legacy-certificate';
+ courses[1].url='https://example.com/verify';
  for(const preview of [true,false]){
   const html=renderToStaticMarkup(React.createElement(Courses,{courses,preview}));
   assert.equal([...html.matchAll(/class="course-title"/g)].length,preview?2:5);
+  assert.ok(html.includes(courses[0].certificate));
+  assert.ok(!html.includes(courses[1].certificate));
+  assert.ok(!html.includes(courses[1].url));
   if(preview)assert.match(html,/href="\/cursos"/);
  }
 });

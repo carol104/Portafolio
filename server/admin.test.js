@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {initialContent} from '../src/content.js';
-import {contentSchema,publicContent} from './content-model.js';
+import {contentSchema,publicContent,normalizeContent} from './content-model.js';
 import {passwordHash,passwordMatches} from './admin.js';
 
 test('initial portfolio conforms to the editable content schema',()=>{
@@ -22,14 +22,14 @@ test('open source projects and course kinds are accepted',()=>{
   tech:['React'],
   kind:'Evento',
   credential:'XYZ',
-  certificate:'https://example.com/certificate.pdf',
+  certificate:'/api/media/11111111-2222-3333-4444-555555555555',
   badge:'',
   visible:true
  });
  assert.equal(contentSchema.safeParse(draft).success,true);
 });
 
-test('course certificate is mandatory and badge is optional',()=>{
+test('course files and optional online verification stay separate',()=>{
  const draft=structuredClone(initialContent);
  const courseWithoutCert={
   id:'course-1',
@@ -46,7 +46,12 @@ test('course certificate is mandatory and badge is optional',()=>{
   visible:true
  };
  draft.courses=[courseWithoutCert];
- assert.equal(contentSchema.safeParse(draft).success,false);
+ assert.equal(contentSchema.safeParse(draft).success,true);
+ const onlineOnly=structuredClone(draft);onlineOnly.courses[0].url='https://example.com/verify';
+ const onlineParsed=contentSchema.parse(onlineOnly);assert.equal(onlineParsed.courses[0].certificate,'');
+ const invalid=structuredClone(draft);invalid.courses[0].certificate='https://example.com/certificate.pdf';
+ assert.equal(contentSchema.safeParse(invalid).success,false);
+ const normalized=normalizeContent(invalid);assert.equal(normalized.courses[0].certificate,'');assert.equal(normalized.courses[0].url,'https://example.com/certificate.pdf');
 
  const courseWithCert={
   ...courseWithoutCert,

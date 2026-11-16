@@ -1,5 +1,5 @@
 import {z} from 'zod';
-import {COURSE_KINDS, INTEREST_ICONS, PREVIEW_STYLES, PROJECT_CATEGORIES} from '../src/portfolio.js';
+import {COURSE_KINDS, INTEREST_ICONS, PREVIEW_STYLES, PROJECT_CATEGORIES, projectRepositories} from '../src/portfolio.js';
 const short=z.string().trim().max(150);
 const required=short.min(1);
 const text=z.string().trim().max(5000);
@@ -34,7 +34,7 @@ const courseSchema = z.object({
 
 export const contentSchema=z.object({
  profile:z.object({name:required,initials:z.string().max(5),role:required,location:short,email:z.union([z.email(),z.literal('')]),github:url,linkedin:url,available:z.boolean(),isExample:z.boolean(),objective:text,about:text,education:z.object({title:short,institution:short,period:short}),showEducation:z.boolean(),resumeUrl:z.string().refine(v=>!v||/^\/api\/media\/[a-f0-9-]{36}$/.test(v),'Sube un PDF desde el panel')}),
- projects:z.array(z.object({...base,title:required,subtitle:short,category:z.enum(PROJECT_CATEGORIES),type:short,tech:z.array(required).max(30),style:z.enum(PREVIEW_STYLES),description:text,contribution:text,collaborators:z.string().trim().max(500).default(''),github:url,url,example:z.boolean(),image:media})).max(100),
+ projects:z.array(z.object({...base,title:required,subtitle:short,category:z.enum(PROJECT_CATEGORIES),type:short,tech:z.array(required).max(30),style:z.enum(PREVIEW_STYLES),description:text,contribution:text,collaborators:z.string().trim().max(500).default(''),collaboratorLinks:z.array(z.object({name:required,github:url})).default([]),github:url,repositories:z.array(z.object({name:short.default(''),url:url.refine(value=>Boolean(value),'Introduce el enlace del repositorio')})).refine(items=>items.length<=1||items.every(item=>item.name.length>0),'Asigna un nombre a cada repositorio cuando hay varios').optional(),url,example:z.boolean(),image:media})).max(100),
  technologyGroups:z.array(z.object({...base,title:required,description:short,icon:z.enum(['code','frontend','backend','database','deploy','quality']),items:z.array(required).max(100)})).max(30),
  experience:z.array(z.object({...base,type:short,title:required,place:short,text})).max(100),
  courses:z.array(courseSchema).max(100),
@@ -43,7 +43,7 @@ export const contentSchema=z.object({
 });
 export function normalizeContent(data){
  const next=structuredClone(data);
- next.projects=(next.projects||[]).map(project=>({collaborators:'',...project,category:PROJECT_CATEGORIES.includes(project.category)?project.category:'Personal',style:PREVIEW_STYLES.includes(project.style)?project.style:'orbit'}));
+ next.projects=(next.projects||[]).map(project=>({collaborators:'',collaboratorLinks:[],...project,repositories:projectRepositories(project),category:PROJECT_CATEGORIES.includes(project.category)?project.category:'Personal',style:PREVIEW_STYLES.includes(project.style)?project.style:'orbit'}));
  next.courses=(next.courses||[]).filter(course=>!course.placeholder&&course.id!=='cisco-placeholder'&&course.id!=='cert-placeholder'&&course.id!=='event-placeholder').map(course=>{
   const uploaded=/^\/api\/media\/[a-f0-9-]{36}$/.test(course.certificate||'');
   return {credential:'',platform:course.platform||(course.institution?.toLowerCase().includes('cisco')?'Cisco':course.institution?.toLowerCase().includes('udemy')?'Udemy':course.institution||''),badge:'',image:'',...course,url:course.url||(!uploaded&&url.safeParse(course.certificate||'').success?course.certificate:'')||'',certificate:uploaded?course.certificate:'',placeholder:false,kind:COURSE_KINDS.includes(course.kind)?course.kind:'Curso'};

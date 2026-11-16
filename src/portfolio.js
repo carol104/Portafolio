@@ -24,8 +24,13 @@ export function projectTechOptions(projects) {
   return [...new Set(projects.flatMap(project => project.tech || []))];
 }
 
+export function projectRepositories(project) {
+  if (Array.isArray(project.repositories)) return project.repositories;
+  return project.github ? [{ name: '', url: project.github }] : [];
+}
+
 export function isTeamProject(project) {
-  return project.category === 'Colaboración' || Boolean(project.collaborators?.trim());
+  return project.category === 'Colaboración' || Boolean(project.collaborators?.trim()) || Boolean(project.collaboratorLinks?.length);
 }
 
 export function categoryLabel(category) {

@@ -16,6 +16,53 @@ async function component(filename,dependencies={}){
  return module.exports;
 }
 
+test('project cards and dialogs expose repository and collaborator links safely',async()=>{
+ const external=await component('ExternalLink.jsx');
+ const repositories=await component('ProjectRepositories.jsx',{'./ExternalLink':external,'../portfolio':await import('../portfolio.js')});
+ const collaborators=await component('ProjectCollaborators.jsx',{'./ExternalLink':external});
+ const empty={__esModule:true,default:()=>null};
+ const dependencies={
+  './ExternalLink':external,
+  './ProjectRepositories':repositories,
+  './ProjectCollaborators':collaborators,
+  './ProjectVisual':empty,
+  './TechnologyTags':empty,
+  './SpotlightCard':{__esModule:true,default:({children})=>React.createElement('article',null,children)},
+  '../motion':{fadeUp:{}},
+  '../portfolio':await import('../portfolio.js'),
+ };
+ const project={id:'team',title:'Team project',category:'Personal',tech:[],github:'https://github.com/team/repo',collaborators:'Original credits',collaboratorLinks:[{name:'Ada',github:'https://github.com/ada'},{name:'Lin',github:'https://github.com/lin'}]};
+ for(const file of ['ProjectCard.jsx','ProjectDialog.jsx']){
+  const {default:Component}=await component(file,dependencies);
+  const html=renderToStaticMarkup(React.createElement(Component,{project,index:0,onOpen:()=>{},onClose:()=>{},triggerRef:{current:null}}));
+  for(const href of [project.github,...project.collaboratorLinks.map(person=>person.github)]){
+   const tag=[...html.matchAll(/<a\b[^>]*>/g)].map(match=>match[0]).find(tag=>tag.includes(`href="${href}"`));
+   assert.ok(tag,`${file}: missing ${href}`);
+   assert.match(tag,/target="_blank"/);
+   assert.match(tag,/rel="noopener noreferrer"/);
+  }
+  assert.ok(html.includes('Original credits'));
+ }
+ const {default:Card}=await component('ProjectCard.jsx',dependencies);
+ const html=renderToStaticMarkup(React.createElement(Card,{project:{...project,github:''},index:0,onOpen:()=>{}}));
+ assert.ok(!html.includes('class="project-github"'));
+ for(const file of ['ProjectCard.jsx','ProjectDialog.jsx']){
+  const {default:Component}=await component(file,dependencies);
+  const repos=['Frontend','Backend','Mobile'].map(name=>({name,url:`https://github.com/team/${name.toLowerCase()}`}));
+  const html=renderToStaticMarkup(React.createElement(Component,{project:{...project,repositories:repos},index:0,onOpen:()=>{},onClose:()=>{},triggerRef:{current:null}}));
+  assert.ok(html.includes('class="project-repositories"'));
+  assert.ok(!html.includes(`href="${project.github}"`));
+  for(const repo of repos){assert.ok(html.includes(`href="${repo.url}"`));assert.ok(html.includes(repo.name));}
+ }
+ const {default:RepositoryLinks}=repositories;
+ for(const count of [0,1]){
+  const html=renderToStaticMarkup(React.createElement(RepositoryLinks,{project:{...project,repositories:count?[{name:'Frontend',url:project.github}]:[]}}));
+  assert.ok(!html.includes('class="project-repositories"'));
+  if(count===0)assert.equal(html,'');
+  else {assert.ok(html.includes('class="project-github"'));assert.ok(!html.includes('Frontend'));}
+ }
+});
+
 test('page navigation points to dedicated routes and Home alone has section navigation',async()=>{
  for(const path of ['/','/proyectos','/cursos','/contacto']){
   const {default:Header}=await component('Header.jsx',{

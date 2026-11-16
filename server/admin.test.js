@@ -8,6 +8,40 @@ test('initial portfolio conforms to the editable content schema',()=>{
  const parsed=contentSchema.safeParse(initialContent);
  assert.equal(parsed.success,true,parsed.error?.issues.map(i=>`${i.path.join('.')}: ${i.message}`).join('; '));
 });
+
+test('project collaborator links support variable teams and preserve legacy credits',()=>{
+ const draft=normalizeContent(initialContent);
+ assert.deepEqual(draft.projects[0].collaboratorLinks,[]);
+ const credits=draft.projects[2].collaborators;
+ draft.projects[2].github='https://github.com/team/project';
+ draft.projects[2].collaboratorLinks=Array.from({length:125},(_,index)=>({name:`Person ${index}`,github:`https://github.com/person-${index}`}));
+ const parsed=contentSchema.parse(draft);
+ assert.equal(parsed.projects[2].collaboratorLinks.length,125);
+ assert.equal(publicContent(parsed).projects[2].collaborators,credits);
+ assert.equal(publicContent(parsed).projects[2].collaboratorLinks[124].github,'https://github.com/person-124');
+ draft.projects[2].collaboratorLinks[0].github='javascript:alert(1)';
+ assert.equal(contentSchema.safeParse(draft).success,false);
+});
+
+test('repository lists retain legacy links and support zero, one or many repositories',()=>{
+ const legacy=structuredClone(initialContent);
+ legacy.projects[0].github='https://github.com/team/original';
+ const draft=normalizeContent(legacy);
+ assert.deepEqual(draft.projects[0].repositories,[{name:'',url:legacy.projects[0].github}]);
+ draft.projects[0].repositories=Array.from({length:125},(_,i)=>({name:`Part ${i}`,url:`https://github.com/team/part-${i}`}));
+ const parsed=contentSchema.parse(draft);
+ assert.equal(publicContent(parsed).projects[0].repositories.length,125);
+ draft.projects[0].repositories=[];
+ assert.deepEqual(normalizeContent(draft).projects[0].repositories,[]);
+ draft.projects[0].repositories=[{name:'',url:'https://github.com/team/single'}];
+ assert.equal(contentSchema.safeParse(draft).success,true);
+ draft.projects[0].repositories.push({name:'Backend',url:'https://github.com/team/backend'});
+ assert.equal(contentSchema.safeParse(draft).success,false);
+ draft.projects[0].repositories[0].name='Frontend';
+ assert.equal(contentSchema.safeParse(draft).success,true);
+ draft.projects[0].repositories[0].url='javascript:alert(1)';
+ assert.equal(contentSchema.safeParse(draft).success,false);
+});
 test('open source projects and course kinds are accepted',()=>{
  const draft=structuredClone(initialContent);
  draft.projects[0].category='Open Source';

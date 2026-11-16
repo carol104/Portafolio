@@ -55,7 +55,6 @@ function App() {
             <section id="inicio" className="hero content-container">
                 <div className="hero-grid" aria-hidden="true" />
                 <m.div className="hero-copy" initial="hidden" animate="show" variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}>
-                    <m.p className="availability" variants={fadeUp}><span /> {profile.available ? 'Abierto a nuevas oportunidades' : 'Bienvenido a mi espacio digital'}</m.p>
                     <m.p className="hello" variants={fadeUp}>Hola, soy {profile.name} <span className="wave">✦</span></m.p>
                     <m.h1 variants={fadeUp}>{headline.map((line, index) => <span className={'headline-line ' + (index === 1 ? 'headline-accent' : 'headline-plain')} key={index}>{line}</span>)}</m.h1>
                     <m.p className="hero-description" variants={fadeUp}>{profile.role}. {appearance.summary}</m.p>

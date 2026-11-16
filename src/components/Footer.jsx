@@ -20,7 +20,6 @@ export default function Footer() {
   return (
     <footer className="footer">
       <Brand name={appearance.brand} href="/" />
-      <p>Hecho con intención, café y <Heart size={12} /> React.</p>
       <a href={isHome ? '#inicio' : '#'} onClick={scrollToTop}>
         Volver arriba <ArrowUpRight size={15} />
       </a>

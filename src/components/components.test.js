@@ -32,7 +32,7 @@ test('page navigation points to dedicated routes and Home alone has section navi
   assert.equal(html.includes('aria-label="Secciones de Home"'),path==='/');
   assert.match(html,/href="\/contacto"/);
   if(path==='/'){
-   assert.match(html,/href="#experiencia" aria-current="location"/);
+   assert.match(html,/href="#experiencia"[^>]*aria-current="location"/);
    for(const id of ['inicio','sobre-mi','tecnologias','experiencia','intereses'])assert.ok(html.includes(`href="#${id}"`));
    assert.ok(html.includes('Sobre mí'));assert.ok(html.includes('Tecnologías'));
   }

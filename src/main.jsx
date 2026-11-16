@@ -28,6 +28,7 @@ const interestIcons = { terminal: Terminal, database: Database, compass: Compass
 function App() {
     const { profile, experience, interests, appearance, projects, courses } = useContent();
     const [active, setActive] = useState('inicio');
+    const [readingProgress, setReadingProgress] = useState(0);
     const [selected, setSelected] = useState(null);
     const trigger = useRef(null);
     function openProject(project, element) {
@@ -35,22 +36,36 @@ function App() {
         setSelected(project);
     }
     useEffect(() => {
-        const sections = [...document.querySelectorAll('main section[id]')];
+        const main = document.getElementById('contenido');
+        const sections = [...main.querySelectorAll('section[id]')];
         let frame;
         const update = () => {
-            const boundary = 230;
-            const current = sections.filter(section => section.getBoundingClientRect().top <= boundary).at(-1);
+            const boundary = (document.querySelector('.site-navigation')?.getBoundingClientRect().bottom || 0) + 24;
+            const bounds = main.getBoundingClientRect();
+            const distance = Math.max(1, bounds.height - window.innerHeight + boundary);
+            const progress = Math.min(100, Math.max(0, Math.round((boundary - bounds.top) / distance * 100)));
+            const atEnd = bounds.bottom <= window.innerHeight + 2;
+            const current = atEnd ? sections.at(-1) : sections.filter(section => section.getBoundingClientRect().top <= boundary).at(-1);
             setActive(current?.id || 'inicio');
+            setReadingProgress(atEnd ? 100 : progress);
         };
         const onScroll = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(update); };
         update();
         window.addEventListener('scroll', onScroll, { passive: true });
-        return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(frame); };
+        window.addEventListener('resize', onScroll);
+        const observer = new ResizeObserver(onScroll);
+        observer.observe(main);
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', onScroll);
+            observer.disconnect();
+            cancelAnimationFrame(frame);
+        };
     }, []);
     const headline = appearance.headline.split('\n');
     return <>
         <a href="#contenido" className="skip-link">Saltar al contenido</a>
-        <Header activeSection={active} />
+        <Header activeSection={active} readingProgress={readingProgress} />
         <main id="contenido">
             <section id="inicio" className="hero content-container">
                 <div className="hero-grid" aria-hidden="true" />

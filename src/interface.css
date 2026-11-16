@@ -775,66 +775,124 @@ body {
   box-shadow: inset 0 1px 0 #ffffff08;
 }
 
+/* Floating section scrollspy. */
 .home-navigation {
   display: flex;
-  align-items: center;
+  justify-content: center;
   width: 100%;
-  padding: 0;
-  border-block: 1px solid #ffffff14;
-  background: linear-gradient(110deg, #0b172bf5, #11213bf5);
-  backdrop-filter: blur(18px);
+  padding: 14px 24px 8px;
+  pointer-events: none;
+}
+
+.home-scrollspy {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 100%;
+  padding: 7px 10px 7px 19px;
+  border: 1px solid #91baff30;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #15243bed, #0c1729f2);
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+  box-shadow: 0 12px 36px #02091655, inset 0 1px 0 #ffffff0a;
+  pointer-events: auto;
+}
+
+.home-scrollspy-caption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 14px;
+  border-right: 1px solid #91baff24;
+  color: #90a4c3;
+  font: 10px/1.4 Consolas, monospace;
+  letter-spacing: 1.6px;
+}
+
+.home-scrollspy-caption > span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #9bc1ff;
+  box-shadow: 0 0 10px #75aaff80;
 }
 
 .home-navigation-links {
   display: flex;
-  justify-content: flex-start;
+  position: relative;
   min-width: 0;
-  gap: 8px;
+  gap: 3px;
   overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #75aaff50 transparent;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
 }
+
+.home-navigation-links::-webkit-scrollbar { display: none; }
 
 .home-navigation-links a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  isolation: isolate;
   flex: 0 0 auto;
-  gap: 8px;
-  min-height: 44px;
-  margin-block: 6px;
-  padding: 0 14px;
-  border-radius: 0;
-  color: #a9b9d1;
-  font-size: var(--font-small);
+  gap: 6px;
+  min-height: 42px;
+  padding: 0 13px;
+  border-radius: 999px;
+  color: #a5b5cd;
+  font-size: var(--font-label);
   white-space: nowrap;
-  transition: color .25s ease, background .25s ease, box-shadow .3s ease, text-shadow .3s ease;
+  transition: color .2s ease, background .2s ease;
 }
 
-.home-navigation-links a:hover,
-.home-navigation-links a[aria-current] {
-  color: #e1edff;
-  background: transparent;
-  box-shadow: none;
-  text-shadow: 0 0 18px #75aaff40;
+.home-section-number {
+  color: #7188aa;
+  font: 9px/1 Consolas, monospace;
+  transition: color .2s ease;
 }
 
-.home-navigation-links a:focus-visible {
-  outline-offset: -4px;
-  border-radius: 6px;
-}
+.home-navigation-links a:hover { color: #fff; background: #91baff0a; }
+.home-navigation-links a[aria-current] { color: #ecf4ff; }
+.home-navigation-links a[aria-current] .home-section-number { color: #a9ccff; }
+.home-navigation-links a:focus-visible { outline-offset: -3px; }
 
 .home-navigation-indicator {
   position: absolute;
-  height: 2px;
-  bottom: 0;
-  left: 12px;
-  right: 12px;
-  border-radius: 2px;
-  background: var(--blue);
-  box-shadow: 0 -3px 14px #75aaff40;
+  z-index: -1;
+  inset: 0;
+  border: 1px solid #91baff40;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #75aaff30, #75aaff12);
+  box-shadow: inset 0 1px 0 #ffffff12, 0 2px 10px #02091630;
+  pointer-events: none;
 }
+
+.home-scrollspy-progress {
+  display: grid;
+  place-items: center;
+  position: relative;
+  flex: 0 0 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: conic-gradient(#9ac2ff var(--reading-progress), #91baff1c 0);
+}
+
+.home-scrollspy-progress > span {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #101d31;
+  color: #c5dcff;
+  font: 10px/32px Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-scrollspy-progress small { font-size: 7px; }
 
 html:has(.site-navigation--home) {
   scroll-padding-top: 178px;
@@ -864,15 +922,11 @@ html:has(.site-navigation--home) {
 }
 
 @media (max-width: 700px) {
-  .home-navigation-links {
-    gap: 8px;
-  }
-
-  .home-navigation-links a {
-    min-height: 44px;
-    padding-inline: 13px;
-    gap: 6px;
-  }
+  .home-navigation { padding: 10px 12px 6px; }
+  .home-scrollspy { gap: 7px; padding: 5px 7px; }
+  .home-scrollspy-caption { display: none; }
+  .home-navigation-links a { min-height: 44px; padding-inline: 12px; }
+  .home-section-number { display: none; }
 
   html:has(.site-navigation--home) {
     scroll-padding-top: 164px;

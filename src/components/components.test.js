@@ -106,6 +106,7 @@ test('Home previews limit cards and link to complete catalogs without limiting d
   if(preview)assert.match(html,/href="\/proyectos"/);
  }
  const {default:Courses}=await component('../Courses.jsx',{
+  './portfolio':await import('../portfolio.js'),
   './components/SectionHeading':heading,
   './components/ExternalLink':button,
   './components/TechnologyTags':defaultExport(()=>null),
@@ -116,12 +117,21 @@ test('Home previews limit cards and link to complete catalogs without limiting d
  });
  const courses=Array.from({length:5},(_,i)=>({id:`course-${i}`,title:`Course ${i}`,kind:'Curso'}));
  courses[0].certificate='/api/media/11111111-2222-3333-4444-555555555555';
+ courses[0].startDate='2026-11-16';
+ courses[0].endDate='2026-12-16';
+ courses[0].modality='Presencial';
+ courses[0].location='Quito';
  courses[1].certificate='https://example.com/legacy-certificate';
  courses[1].url='https://example.com/verify';
  for(const preview of [true,false]){
   const html=renderToStaticMarkup(React.createElement(Courses,{courses,preview}));
   assert.equal([...html.matchAll(/class="course-title"/g)].length,preview?2:5);
   assert.ok(html.includes(courses[0].certificate));
+  assert.match(html, /dateTime="2026-11-16"/i);
+  assert.match(html, /dateTime="2026-12-16"/i);
+  assert.ok(html.includes('Presencial'));
+  assert.ok(html.includes('Quito'));
+  for(const label of ['Todos','Cursos','Certificaciones','Eventos'])assert.ok(html.includes(`>${label}</button>`));
   assert.ok(!html.includes(courses[1].certificate));
   assert.ok(!html.includes(courses[1].url));
   if(preview)assert.match(html,/href="\/cursos"/);

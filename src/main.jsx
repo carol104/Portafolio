@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowUpRight, ArrowDown, Download, MapPin, Check, Terminal, Database, Compass, Gamepad2, Music2, Lightbulb, Code2, Camera, Binoculars, Braces } from 'lucide-react';
+import { ArrowUpRight, ArrowDown, Download, MapPin, Check, Terminal, Database, Compass, Gamepad2, Music2, Lightbulb, Code2, Camera, Binoculars, Braces, Trees, Volleyball } from 'lucide-react';
 import { ContentProvider, useContent } from './ContentContext';
 import { RouterProvider, useRouter } from './router';
 import './public-content.css';
@@ -23,7 +23,7 @@ import ProjectDialog from './components/ProjectDialog';
 import Courses from './Courses';
 import { MotionRoot, Reveal, Stagger, fadeUp, m } from './motion';
 
-const interestIcons = { terminal: Terminal, database: Database, compass: Compass, music: Music2, game: Gamepad2, idea: Lightbulb, camera: Camera, bird: Binoculars };
+const interestIcons = { terminal: Terminal, database: Database, compass: Compass, music: Music2, game: Gamepad2, idea: Lightbulb, camera: Camera, bird: Binoculars, nature: Trees, sports: Volleyball };
 
 function App() {
     const { profile, experience, interests, appearance, projects, courses } = useContent();

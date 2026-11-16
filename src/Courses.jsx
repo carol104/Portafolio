@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { GraduationCap, Award, CalendarDays, ArrowUpRight } from 'lucide-react';
+import { COURSE_FILTERS, filterCourses } from './portfolio';
 import SectionHeading from './components/SectionHeading';
 import ExternalLink from './components/ExternalLink';
 import TechnologyTags from './components/TechnologyTags';
@@ -8,10 +10,13 @@ import MagneticButton from './components/MagneticButton';
 import { fadeUp, Stagger } from './motion';
 
 const icons = { Curso: GraduationCap, Certificación: Award, Evento: CalendarDays };
+const dateLabel = value => new Intl.DateTimeFormat('es-EC', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`));
 
 export default function Courses({ courses, preview = false }) {
+  const [kind, setKind] = useState('Todos');
   const allCourses = courses || [];
-  const items = preview ? allCourses.slice(0, 2) : allCourses;
+  const filtered = filterCourses(allCourses, kind);
+  const items = preview ? filtered.slice(0, 2) : filtered;
 
   return (
     <section id="cursos" className="section courses-section">
@@ -22,8 +27,19 @@ export default function Courses({ courses, preview = false }) {
         Formación, credenciales <span>y comunidad.</span>
       </SectionHeading>
 
+      <div className="project-toolbar course-toolbar">
+        <div className="filters" role="group" aria-label="Filtrar formación por tipo">
+          {COURSE_FILTERS.map(([value, label]) => (
+            <button key={value} type="button" aria-pressed={kind === value} className={kind === value ? 'selected' : ''} onClick={() => setKind(value)}>
+              {label}
+            </button>
+          ))}
+        </div>
+        <span role="status">{filtered.length} {filtered.length === 1 ? 'resultado' : 'resultados'}</span>
+      </div>
+
       {items.length ? (
-        <Stagger className="course-timeline" as="div">
+        <Stagger key={kind} className="course-timeline" as="div">
           {items.map((course) => {
             const Icon = icons[course.kind] || GraduationCap;
             return (
@@ -56,11 +72,17 @@ export default function Courses({ courses, preview = false }) {
                   </div>
                   <div className="course-kind-pill">
                     <Icon size={16} aria-hidden="true"/>
-                    <span>{course.kind} · {course.period}</span>
+                    <span>{course.kind || 'Curso'}{course.period && ` · ${course.period}`}</span>
                   </div>
                 </div>
 
                 <h3 className="course-title">{course.title}</h3>
+
+                <dl className="course-details">
+                  {course.startDate && <div><dt>Inicio</dt><dd><time dateTime={course.startDate}>{dateLabel(course.startDate)}</time></dd></div>}
+                  {course.endDate && <div><dt>Fin</dt><dd><time dateTime={course.endDate}>{dateLabel(course.endDate)}</time></dd></div>}
+                  {[[course.duration, 'Duración'], [course.modality, 'Modalidad'], [course.location, 'Ubicación'], [course.status, 'Estado'], [course.role, 'Participación']].map(([value, label]) => value ? <div key={label}><dt>{label}</dt><dd>{value}</dd></div> : null)}
+                </dl>
 
                 {course.credential && (
                   <p className="course-credential">
@@ -89,7 +111,7 @@ export default function Courses({ courses, preview = false }) {
           })}
         </Stagger>
       ) : (
-        <p className="example-note">Añade cursos, certificaciones y eventos desde el panel de administración.</p>
+        <p className="example-note">{allCourses.length ? 'No hay elementos de este tipo por ahora. Prueba otro filtro.' : 'Añade cursos, certificaciones y eventos desde el panel de administración.'}</p>
       )}
 
       {preview && (

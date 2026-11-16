@@ -31,10 +31,10 @@ export const experience = [
 export const interests = [
   {id:'hackathons',icon:'terminal',title:'Hackatones',description:'Ideas, prototipos y el reto de construir en equipo.',visible:true},
   {id:'opensource',icon:'database',title:'Supabase & open source',description:'Explorar herramientas y aprender compartiendo.',visible:true},
-  {id:'vision',icon:'idea',title:'IA y visión por computador',description:'Probar modelos, datasets y prototipos que ven el mundo.',visible:true},
+  {id:'nature',icon:'nature',title:'Naturaleza',description:'Disfruto de la naturaleza y de pasar tiempo al aire libre.',visible:true},
   {id:'birds',icon:'bird',title:'Observación de aves',description:'Paciencia, detalle y una forma de mirar distinto.',visible:true},
   {id:'photo',icon:'camera',title:'Fotografía',description:'Componer luz, color y momento fuera de la pantalla.',visible:true},
-  {id:'music',icon:'music',title:'Música & creatividad',description:'Un poco de inspiración para el próximo proyecto.',visible:true},
+  {id:'sports',icon:'sports',title:'Deportes',description:'Me gusta jugar fútbol y básquet para mantenerme activa y compartir en equipo.',visible:true},
 ];
 export const initialContent = {
   profile:{...profile,resumeUrl:'',showEducation:true},

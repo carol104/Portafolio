@@ -9,8 +9,14 @@ export const PROJECT_FILTERS = [
 ];
 
 export const COURSE_KINDS = ['Curso', 'Certificación', 'Evento'];
+export const COURSE_FILTERS = [['Todos', 'Todos'], ['Curso', 'Cursos'], ['Certificación', 'Certificaciones'], ['Evento', 'Eventos']];
+export const COURSE_MODALITIES = ['Online', 'Presencial', 'Híbrida'];
+export const COURSE_STATUSES = ['Próximamente', 'En curso', 'Finalizado'];
+export function filterCourses(courses, kind) {
+  return courses.filter(course => kind === 'Todos' || (course.kind || 'Curso') === kind);
+}
 export const PLATFORMS = ['Cisco', 'Udemy', 'Otro'];
-export const INTEREST_ICONS = ['terminal', 'database', 'compass', 'music', 'game', 'idea', 'camera', 'bird'];
+export const INTEREST_ICONS = ['terminal', 'database', 'compass', 'music', 'game', 'idea', 'camera', 'bird', 'nature', 'sports'];
 export const PREVIEW_STYLES = ['orbit', 'store', 'analytics', 'hack'];
 
 export function filterProjects(projects, category, tech) {

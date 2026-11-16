@@ -1,5 +1,5 @@
 import {z} from 'zod';
-import {COURSE_KINDS, INTEREST_ICONS, PREVIEW_STYLES, PROJECT_CATEGORIES, projectRepositories} from '../src/portfolio.js';
+import {COURSE_KINDS, COURSE_MODALITIES, COURSE_STATUSES, INTEREST_ICONS, PREVIEW_STYLES, PROJECT_CATEGORIES, projectRepositories} from '../src/portfolio.js';
 const short=z.string().trim().max(150);
 const required=short.min(1);
 const text=z.string().trim().max(5000);
@@ -9,11 +9,19 @@ const url=z.string().max(2048).refine(value=>{
 },'Usa un enlace completo con https://');
 const media=z.string().max(2048).refine(value=>!value||/^\/api\/media\/[a-f0-9-]{36}$/.test(value)||/^\/assets\/imagenes_cursos\/[a-zA-Z0-9_-]+\.(png|jpg|jpeg|webp)$/.test(value)||url.safeParse(value).success,'Usa una imagen subida o un enlace http(s) válido');
 const base={id:z.string().min(1).max(80),visible:z.boolean()};
+const optionalDate=z.union([z.iso.date(),z.literal('')]).default('');
 const courseSchema = z.object({
  ...base,
  title: required,
  institution: required,
  period: short,
+ startDate: optionalDate,
+ endDate: optionalDate,
+ duration: short.default(''),
+ modality: z.enum(['',...COURSE_MODALITIES]).default(''),
+ location: short.default(''),
+ status: z.enum(['',...COURSE_STATUSES]).default(''),
+ role: short.default(''),
  description: text,
  url,
  tech: z.array(required).max(30),
@@ -30,6 +38,8 @@ const courseSchema = z.object({
  ).default(''),
  image: media.default(''),
  placeholder: z.boolean().default(false)
+}).refine(course=>!course.startDate||!course.endDate||course.endDate>=course.startDate,{
+ message:'La fecha de fin debe ser igual o posterior a la fecha de inicio',path:['endDate']
 });
 
 export const contentSchema=z.object({

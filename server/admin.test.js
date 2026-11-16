@@ -3,6 +3,42 @@ import assert from 'node:assert/strict';
 import {initialContent} from '../src/content.js';
 import {contentSchema,publicContent,normalizeContent} from './content-model.js';
 import {passwordHash,passwordMatches} from './admin.js';
+import {filterCourses} from '../src/portfolio.js';
+import {updateInterests} from './interests-migration.js';
+
+test('course filters support all types and legacy courses',()=>{
+ const courses=[{id:'legacy'},{id:'course',kind:'Curso'},{id:'cert',kind:'Certificación'},{id:'event',kind:'Evento'}];
+ assert.equal(filterCourses(courses,'Todos').length,4);
+ assert.deepEqual(filterCourses(courses,'Curso').map(item=>item.id),['legacy','course']);
+ assert.deepEqual(filterCourses(courses,'Certificación').map(item=>item.id),['cert']);
+ assert.deepEqual(filterCourses(courses,'Evento').map(item=>item.id),['event']);
+ assert.deepEqual(filterCourses([],'Evento'),[]);
+});
+
+test('requested interests replace saved text while preserving other interests',()=>{
+ const items=[{id:'ideas',title:'Ideas innovadoras',visible:true},{id:'songs',title:'Música mientras programo',visible:false},{id:'photo',title:'Fotografía'}];
+ const updated=updateInterests(items);
+ assert.equal(updated[0].title,'Naturaleza');
+ assert.equal(updated[1].title,'Deportes');
+ assert.match(updated[1].description,/fútbol y básquet/);
+ assert.equal(updated[1].visible,false);
+ assert.deepEqual(updated[2],items[2]);
+});
+
+test('training details survive publication and reject invalid dates',()=>{
+ const draft=structuredClone(initialContent);
+ for(const kind of ['Curso','Certificación','Evento']){
+  draft.courses=[{id:'training',title:'Formación',institution:'Academia',period:'',description:'',url:'',tech:[],visible:true,kind,startDate:'2026-11-16',endDate:'2026-12-16',duration:'40 horas',modality:'Online',location:'Ecuador',status:'En curso',role:'Asistente'}];
+  const published=publicContent(contentSchema.parse(draft)).courses[0];
+  for(const key of ['startDate','endDate','duration','modality','location','status','role'])assert.equal(published[key],draft.courses[0][key]);
+  draft.courses[0].endDate='2026-11-15';
+  assert.equal(contentSchema.safeParse(draft).success,false);
+  draft.courses[0].endDate='2026-02-30';
+  assert.equal(contentSchema.safeParse(draft).success,false);
+  draft.courses[0].startDate='';draft.courses[0].endDate='';
+  assert.equal(contentSchema.safeParse(draft).success,true);
+ }
+});
 
 test('initial portfolio conforms to the editable content schema',()=>{
  const parsed=contentSchema.safeParse(initialContent);

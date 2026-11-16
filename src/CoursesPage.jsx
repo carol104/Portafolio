@@ -22,10 +22,10 @@ export default function CoursesPage() {
               <Award size={15} /> Credenciales y formación
             </div>
             <h1 className="subpage-title">
-              Cursos y <span>certificaciones.</span>
+              Cursos, certificaciones <span>y eventos.</span>
             </h1>
             <p className="subpage-description">
-              Recorrido formativo completo, credenciales verificables, certificaciones oficiales de Cisco y Udemy, diplomas en PDF/PNG e insignias.
+              Mi recorrido de aprendizaje: cursos, certificaciones y eventos, con fechas, detalles de participación, diplomas e insignias.
             </p>
           </div>
         </div>

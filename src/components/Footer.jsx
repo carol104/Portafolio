@@ -25,7 +25,7 @@ export default function Footer() {
       </a>
       <small>
         © {new Date().getFullYear()} {profile.name}
-        {profile.isExample ? ' · Contenido de ejemplo' : ''}{' '}
+        {profile.isExample ? ' · Contenido' : ''}{' '}
         <a className="admin-entry" href="/admin">
           Administrar
         </a>

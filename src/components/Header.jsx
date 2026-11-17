@@ -26,7 +26,7 @@ export default function Header({ activeSection = '' }) {
     { id: 'sobre-mi', label: 'Sobre mí' },
     { id: 'tecnologias', label: 'Tecnologías' },
     { id: 'proyectos', label: 'Proyectos' },
-    { id: 'experiencia', label: 'Experiencia' },
+    { id: 'servicios', label: 'Servicios' },
     { id: 'cursos', label: 'Cursos' },
     { id: 'intereses', label: 'Intereses' },
   ];

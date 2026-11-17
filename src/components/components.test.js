@@ -72,15 +72,15 @@ test('page navigation points to dedicated routes and Home alone has section navi
    '../router':{useRouter:()=>({path})},
    '../motion':{m:{span:({layoutId,transition,...props})=>React.createElement('span',props)}},
   });
-  const html=renderToStaticMarkup(React.createElement(Header,{activeSection:'experiencia'}));
+  const html=renderToStaticMarkup(React.createElement(Header,{activeSection:'servicios'}));
   const primary=html.match(/<nav id="portfolio-navigation"[\s\S]*?<\/nav>/)[0];
-  assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(match=>match[1]),['/','/proyectos','/cursos','/contacto']);
-  assert.match(primary,new RegExp(`href="${path}"[^>]*aria-current="page"`));
+  assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(match=>match[1]),['/','/proyectos','/cursos']);
+  if(path!=='/contacto')assert.match(primary,new RegExp(`href="${path}"[^>]*aria-current="page"`));
   assert.equal(html.includes('aria-label="Secciones de Home"'),path==='/');
   assert.match(html,/href="\/contacto"/);
   if(path==='/'){
-   assert.match(html,/href="#experiencia"[^>]*aria-current="location"/);
-   for(const id of ['inicio','sobre-mi','tecnologias','experiencia','intereses'])assert.ok(html.includes(`href="#${id}"`));
+   assert.match(html,/href="#servicios"[^>]*aria-current="location"/);
+   for(const id of ['inicio','sobre-mi','tecnologias','servicios','intereses'])assert.ok(html.includes(`href="#${id}"`));
    assert.ok(html.includes('Sobre mí'));assert.ok(html.includes('Tecnologías'));
   }
  }

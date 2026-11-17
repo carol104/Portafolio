@@ -126,12 +126,12 @@ function App() {
             </section>
             <Technologies />
             <ProjectsSection projects={projects} onOpen={openProject} preview />
-            <section id="experiencia" className="section experience">
+            <section id="servicios" className="section experience">
                 <Reveal className="experience-intro">
-                    <p className="eyebrow">EL CAMINO RECORRIDO</p>
-                    <h2>Aprender.<br />Construir.<br /><span>Evolucionar.</span></h2>
-                    <p>Cada reto aporta una nueva perspectiva. Aquí hay espacio para contar tu recorrido profesional.</p>
-                    <MagneticButton href="/api/resume" target="_blank" rel="noreferrer" className="text-link" aria-label="Ver y descargar la hoja de vida en PDF">Ver hoja de vida <ArrowUpRight size={17} /></MagneticButton>
+                    <p className="eyebrow">SERVICIOS</p>
+                    <h2>Tu idea.<br />Una solución.<br /><span>Hecha a medida.</span></h2>
+                    <p>Construyo soluciones digitales que conectan con las personas y responden a lo que tu proyecto necesita.</p>
+                    <MagneticButton href="/contacto" className="text-link">Hablemos de tu proyecto <ArrowUpRight size={17} /></MagneticButton>
                 </Reveal>
                 <div className="timeline">{experience.map((e, i) => <Reveal as="article" key={e.id} delay={i * 0.06}><span className="timeline-node" /><div className="timeline-top"><small>{e.type}</small><span>{String(i + 1).padStart(2, '0')}</span></div><h3>{e.title}</h3><h4>{e.place}</h4><p>{e.text}</p></Reveal>)}</div>
             </section>

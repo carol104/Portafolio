@@ -1,4 +1,3 @@
-// Reemplaza los ejemplos con información verificada antes de publicar.
 import { placeholderCourses } from './portfolio.js';
 export const professionalLinks = { linkedin: 'https://www.linkedin.com/in/carol-cañizares-villacís-1518833ba/' };
 export const profile = {
@@ -24,9 +23,10 @@ export const projects = [
   { id: 'hack', title: 'Build Together', subtitle: 'De una idea a un prototipo en equipo.', category: 'Open Source', type: 'EXPERIMENTACIÓN', tech: ['React', 'Supabase', 'Git'], style: 'hack', description: 'Problema: los prototipos de hackathon se pierden al terminar el evento. Solución: un espacio para documentar aprendizajes, exploraciones con Supabase y trabajo en comunidad.', contribution: 'Interés por explorar; no representa participación ni premios en un evento real.', collaborators: 'Comunidad / equipo del evento', github: '', url: '', example: true }
 ];
 export const experience = [
-  { type: 'EMPRESA', title: 'Tu siguiente experiencia', place: 'Empresa · Cargo · Período', text: 'Describe aquí una experiencia real: el problema que resolviste, tus responsabilidades y un resultado que puedas demostrar.' },
-  { type: 'INDEPENDIENTE', title: 'Soluciones para clientes', place: 'Cliente · Proyecto · Período', text: 'Añade un trabajo realizado, tu aportación y las tecnologías que utilizaste. Puedes omitir esta sección si todavía no aplica.' },
-  { type: 'APRENDIZAJE', title: 'Construir, compartir, mejorar', place: 'Proyectos propios y colaboración', text: 'Documenta tus proyectos personales, contribuciones de código abierto y aprendizajes. El proceso también cuenta una historia.' }
+  { type: 'DESARROLLO WEB', title: 'Construcción de aplicaciones web', place: 'Soluciones para la web', text: 'Desarrollo aplicaciones web adaptables a distintos dispositivos, con interfaces claras y funcionalidades a medida para tu negocio o proyecto.' },
+  { type: 'DESARROLLO MÓVIL', title: 'Aplicaciones móviles', place: 'Tu proyecto en movimiento', text: 'Creo aplicaciones móviles con una navegación intuitiva para acercar tus servicios a las personas desde su teléfono.' },
+  { type: 'INTEGRACIONES', title: 'APIs', place: 'Conecta tus aplicaciones', text: 'Diseño y desarrollo APIs para intercambiar datos, integrar plataformas y conectar las funcionalidades de tus aplicaciones.' },
+  { type: 'ARQUITECTURA BACKEND', title: 'Microservicios', place: 'Servicios que crecen contigo', text: 'Construyo servicios independientes para organizar la lógica de tu aplicación, facilitar su mantenimiento y acompañar el crecimiento de tu proyecto.' }
 ];
 export const interests = [
   { id: 'hackathons', icon: 'terminal', title: 'Hackatones', description: 'Ideas, prototipos y el reto de construir en equipo.', visible: true },

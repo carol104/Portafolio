@@ -18,29 +18,29 @@ export const technologyGroups = [
 ];
 export const technologies = technologyGroups.flatMap(group => group.items);
 export const projects = [
-  {id:'orbit',title:'Orbit',subtitle:'Un espacio para que las ideas avancen.',category:'Personal',type:'PRODUCTIVIDAD',tech:['React','Express','PostgreSQL'],style:'orbit',description:'Problema: las ideas se dispersan entre notas y chats. Solución: un espacio para organizar proyectos, visualizar tareas y colaborar desde un solo lugar.',contribution:'Ejemplo de alcance: diseño de interfaz, componentes de React y API de proyectos.',collaborators:'',github:'',url:'',example:true},
-  {id:'nexo',title:'Nexo Store',subtitle:'Una experiencia de compra más simple.',category:'Clientes',type:'E-COMMERCE',tech:['React','Node.js','PostgreSQL'],style:'store',description:'Problema: un catálogo difícil de explorar en móvil. Solución: una tienda digital con filtros claros y un flujo de compra adaptable.',contribution:'Ejemplo de alcance: catálogo, carrito y modelo de datos. Sustituye este caso por un trabajo real para un cliente.',collaborators:'',github:'',url:'',example:true},
-  {id:'pulse',title:'Pulse Analytics',subtitle:'Datos claros. Mejores decisiones.',category:'Colaboración',type:'DASHBOARD',tech:['React','Express','CSS'],style:'analytics',description:'Problema: indicadores dispersos y difíciles de leer. Solución: un panel para explorar métricas y detectar patrones con visualizaciones claras.',contribution:'Ejemplo de aporte: componentes de visualización y diseño responsive. Identifica aquí tu contribución real al equipo.',collaborators:'Añade aquí a tus colaboradores',github:'',url:'',example:true},
-  {id:'hack',title:'Build Together',subtitle:'De una idea a un prototipo en equipo.',category:'Open Source',type:'EXPERIMENTACIÓN',tech:['React','Supabase','Git'],style:'hack',description:'Problema: los prototipos de hackathon se pierden al terminar el evento. Solución: un espacio para documentar aprendizajes, exploraciones con Supabase y trabajo en comunidad.',contribution:'Interés por explorar; no representa participación ni premios en un evento real.',collaborators:'Comunidad / equipo del evento',github:'',url:'',example:true}
+  { id: 'orbit', title: 'Orbit', subtitle: 'Un espacio para que las ideas avancen.', category: 'Personal', type: 'PRODUCTIVIDAD', tech: ['React', 'Express', 'PostgreSQL'], style: 'orbit', description: 'Problema: las ideas se dispersan entre notas y chats. Solución: un espacio para organizar proyectos, visualizar tareas y colaborar desde un solo lugar.', contribution: 'Ejemplo de alcance: diseño de interfaz, componentes de React y API de proyectos.', collaborators: '', github: '', url: '', example: true },
+  { id: 'nexo', title: 'Nexo Store', subtitle: 'Una experiencia de compra más simple.', category: 'Clientes', type: 'E-COMMERCE', tech: ['React', 'Node.js', 'PostgreSQL'], style: 'store', description: 'Problema: un catálogo difícil de explorar en móvil. Solución: una tienda digital con filtros claros y un flujo de compra adaptable.', contribution: 'Ejemplo de alcance: catálogo, carrito y modelo de datos. Sustituye este caso por un trabajo real para un cliente.', collaborators: '', github: '', url: '', example: true },
+  { id: 'pulse', title: 'Pulse Analytics', subtitle: 'Datos claros. Mejores decisiones.', category: 'Colaboración', type: 'DASHBOARD', tech: ['React', 'Express', 'CSS'], style: 'analytics', description: 'Problema: indicadores dispersos y difíciles de leer. Solución: un panel para explorar métricas y detectar patrones con visualizaciones claras.', contribution: 'Ejemplo de aporte: componentes de visualización y diseño responsive. Identifica aquí tu contribución real al equipo.', collaborators: 'Añade aquí a tus colaboradores', github: '', url: '', example: true },
+  { id: 'hack', title: 'Build Together', subtitle: 'De una idea a un prototipo en equipo.', category: 'Open Source', type: 'EXPERIMENTACIÓN', tech: ['React', 'Supabase', 'Git'], style: 'hack', description: 'Problema: los prototipos de hackathon se pierden al terminar el evento. Solución: un espacio para documentar aprendizajes, exploraciones con Supabase y trabajo en comunidad.', contribution: 'Interés por explorar; no representa participación ni premios en un evento real.', collaborators: 'Comunidad / equipo del evento', github: '', url: '', example: true }
 ];
 export const experience = [
-  {type:'EMPRESA',title:'Tu siguiente experiencia',place:'Empresa · Cargo · Período',text:'Describe aquí una experiencia real: el problema que resolviste, tus responsabilidades y un resultado que puedas demostrar.'},
-  {type:'INDEPENDIENTE',title:'Soluciones para clientes',place:'Cliente · Proyecto · Período',text:'Añade un trabajo realizado, tu aportación y las tecnologías que utilizaste. Puedes omitir esta sección si todavía no aplica.'},
-  {type:'APRENDIZAJE',title:'Construir, compartir, mejorar',place:'Proyectos propios y colaboración',text:'Documenta tus proyectos personales, contribuciones de código abierto y aprendizajes. El proceso también cuenta una historia.'}
+  { type: 'EMPRESA', title: 'Tu siguiente experiencia', place: 'Empresa · Cargo · Período', text: 'Describe aquí una experiencia real: el problema que resolviste, tus responsabilidades y un resultado que puedas demostrar.' },
+  { type: 'INDEPENDIENTE', title: 'Soluciones para clientes', place: 'Cliente · Proyecto · Período', text: 'Añade un trabajo realizado, tu aportación y las tecnologías que utilizaste. Puedes omitir esta sección si todavía no aplica.' },
+  { type: 'APRENDIZAJE', title: 'Construir, compartir, mejorar', place: 'Proyectos propios y colaboración', text: 'Documenta tus proyectos personales, contribuciones de código abierto y aprendizajes. El proceso también cuenta una historia.' }
 ];
 export const interests = [
-  {id:'hackathons',icon:'terminal',title:'Hackatones',description:'Ideas, prototipos y el reto de construir en equipo.',visible:true},
-  {id:'opensource',icon:'database',title:'Supabase & open source',description:'Explorar herramientas y aprender compartiendo.',visible:true},
-  {id:'nature',icon:'nature',title:'Naturaleza',description:'Disfruto de la naturaleza y de pasar tiempo al aire libre.',visible:true},
-  {id:'birds',icon:'bird',title:'Observación de aves',description:'Paciencia, detalle y una forma de mirar distinto.',visible:true},
-  {id:'photo',icon:'camera',title:'Fotografía',description:'Componer luz, color y momento fuera de la pantalla.',visible:true},
-  {id:'sports',icon:'sports',title:'Deportes',description:'Me gusta jugar fútbol y básquet para mantenerme activa y compartir en equipo.',visible:true},
+  { id: 'hackathons', icon: 'terminal', title: 'Hackatones', description: 'Ideas, prototipos y el reto de construir en equipo.', visible: true },
+  { id: 'opensource', icon: 'database', title: 'Supabase & open source', description: 'Explorar herramientas y aprender compartiendo.', visible: true },
+  { id: 'nature', icon: 'nature', title: 'Naturaleza', description: 'Disfruto de la naturaleza y de pasar tiempo al aire libre.', visible: true },
+  { id: 'birds', icon: 'bird', title: 'Observación de aves', description: 'Paciencia, detalle y una forma de mirar distinto.', visible: true },
+  { id: 'photo', icon: 'camera', title: 'Fotografía', description: 'Componer luz, color y momento fuera de la pantalla.', visible: true },
+  { id: 'sports', icon: 'sports', title: 'Deportes', description: 'Me gusta jugar fútbol y básquet para mantenerme activa y compartir en equipo.', visible: true },
 ];
 export const initialContent = {
-  profile:{...profile,resumeUrl:'',showEducation:true},
-  projects:projects.map(project=>({...project,visible:true,image:''})),
-  technologyGroups:technologyGroups.map((group,index)=>({...group,id:`group-${index}`,visible:true})),
-  experience:experience.map((item,index)=>({...item,id:`experience-${index}`,visible:true})),
-  courses:placeholderCourses, interests,
-  appearance:{brand:'dev.folio',headline:'Convierto ideas\nen experiencias\nque importan.',summary:'Combino diseño y código para crear productos digitales que se sienten tan bien como funcionan.',accent:'#82aff7',background:'#080f21'},
+  profile: { ...profile, resumeUrl: '', showEducation: true },
+  projects: projects.map(project => ({ ...project, visible: true, image: '' })),
+  technologyGroups: technologyGroups.map((group, index) => ({ ...group, id: `group-${index}`, visible: true })),
+  experience: experience.map((item, index) => ({ ...item, id: `experience-${index}`, visible: true })),
+  courses: placeholderCourses, interests,
+  appearance: { brand: 'dev.folio', headline: 'Convierto ideas\nen aplicaciones\n', summary: 'Desarrollo aplicaciones web y móviles para automatizar procesos de la vida cotidiana.', accent: '#82aff7', background: '#080f21' },
 };

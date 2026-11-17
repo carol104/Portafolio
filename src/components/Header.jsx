@@ -19,7 +19,7 @@ export default function Header({ activeSection = '' }) {
     { label: 'Inicio', path: '/' },
     { label: 'Proyectos', path: '/proyectos' },
     { label: 'Cursos', path: '/cursos' },
-    { label: 'Contacto', path: '/contacto' },
+
   ];
   const sections = [
     { id: 'inicio', label: 'Inicio' },
@@ -98,15 +98,15 @@ export default function Header({ activeSection = '' }) {
         <nav className="home-navigation" aria-label="Secciones de Home" ref={sectionNavigation}>
           <div id="home-sections" className="home-scrollspy" hidden={!sectionsOpen}>
             <div className="home-navigation-links" ref={sectionLinks}>
-            {sections.map((section) => {
-              const current = (activeSection || 'inicio') === section.id;
-              return (
-                <a key={section.id} href={'#' + section.id} aria-label={section.label} title={section.label} aria-current={current ? 'location' : undefined}>
-                  <span className="home-section-label">{section.label}</span>
-                  {current && <m.span className="home-navigation-indicator" layoutId="home-section-indicator" transition={{ type: 'spring', stiffness: 360, damping: 34 }} />}
-                </a>
-              );
-            })}
+              {sections.map((section) => {
+                const current = (activeSection || 'inicio') === section.id;
+                return (
+                  <a key={section.id} href={'#' + section.id} aria-label={section.label} title={section.label} aria-current={current ? 'location' : undefined}>
+                    <span className="home-section-label">{section.label}</span>
+                    {current && <m.span className="home-navigation-indicator" layoutId="home-section-indicator" transition={{ type: 'spring', stiffness: 360, damping: 34 }} />}
+                  </a>
+                );
+              })}
             </div>
           </div>
           <button

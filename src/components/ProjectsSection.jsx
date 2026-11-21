@@ -26,9 +26,9 @@ export default function ProjectsSection({ projects, onOpen, preview = false }) {
       </SectionTitle>
 
       {!preview && (
-        <>
-          <div className="project-toolbar">
-            <div className="filters" role="tablist" aria-label="Filtrar proyectos por categoría">
+        <div className="project-toolbar">
+          <div className="project-toolbar-filters">
+            <div className="filters" role="tablist" aria-label="Filtrar proyectos por tipo">
               {PROJECT_FILTERS.map((item) => (
                 <button
                   key={item.id}
@@ -42,32 +42,34 @@ export default function ProjectsSection({ projects, onOpen, preview = false }) {
                 </button>
               ))}
             </div>
-            <span>{String(filtered.length).padStart(2, '0')} proyectos</span>
-          </div>
-          {techs.length > 0 && (
-            <div className="filters tech-filters" role="group" aria-label="Filtrar por tecnología">
-              <button
-                type="button"
-                className={tech === 'Todos' ? 'selected' : ''}
-                aria-pressed={tech === 'Todos'}
-                onClick={() => setTech('Todos')}
-              >
-                Todo el stack
-              </button>
-              {techs.map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  className={tech === item ? 'selected' : ''}
-                  aria-pressed={tech === item}
-                  onClick={() => setTech(item)}
+
+            {techs.length > 0 && (
+              <div className="project-tech-select-wrapper">
+                <label htmlFor="project-tech-select" className="project-tech-label">
+                  Tecnología:
+                </label>
+                <select
+                  id="project-tech-select"
+                  className="project-tech-select"
+                  value={tech}
+                  onChange={(e) => setTech(e.target.value)}
+                  aria-label="Filtrar proyectos por tecnología"
                 >
-                  {item}
-                </button>
-              ))}
-            </div>
-          )}
-        </>
+                  <option value="Todos">Todas las tecnologías ({techs.length})</option>
+                  {techs.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+
+          <span className="project-counter" role="status">
+            {String(filtered.length).padStart(2, '0')} {filtered.length === 1 ? 'proyecto' : 'proyectos'}
+          </span>
+        </div>
       )}
 
       <m.div className="project-grid" layout>

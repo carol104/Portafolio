@@ -484,3 +484,77 @@
         padding: 13px 18px;
     }
 }
+
+
+/* --- Filtro desplegable (Select / Combo box) de tecnologías para proyectos --- */
+.project-toolbar-filters {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.project-tech-select-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.project-tech-label {
+  font-size: var(--font-small, 14px);
+  color: var(--muted, #9caac3);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.project-tech-select {
+  appearance: none;
+  background-color: #111d33;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2382aff7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  color: #e0ecfd;
+  border: 1px solid #75aaff40;
+  border-radius: 8px;
+  padding: 8px 36px 8px 14px;
+  font-size: var(--font-small, 14px);
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 170px;
+}
+
+.project-tech-select:hover {
+  border-color: #82aff7;
+  background-color: #162644;
+}
+
+.project-tech-select:focus-visible {
+  border-color: #90bcff;
+  box-shadow: 0 0 0 3px rgba(117, 170, 255, 0.25);
+}
+
+.project-tech-select option {
+  background-color: #0b1526;
+  color: #f1f6fc;
+}
+
+@media (max-width: 760px) {
+  .project-toolbar-filters {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 12px;
+  }
+  .project-tech-select-wrapper {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .project-tech-select {
+    flex: 1;
+    min-width: 0;
+  }
+}

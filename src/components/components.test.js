@@ -131,7 +131,8 @@ test('Home previews limit cards and link to complete catalogs without limiting d
   assert.match(html, /dateTime="2026-12-16"/i);
   assert.ok(html.includes('Presencial'));
   assert.ok(html.includes('Quito'));
-  for(const label of ['Todos','Cursos','Certificaciones','Eventos'])assert.ok(html.includes(`>${label}</button>`));
+  for(const label of ['Todos','Cursos','Eventos'])assert.ok(html.includes(`>${label}</button>`));
+  assert.ok(!html.includes('>Certificaciones</button>'));
   assert.ok(!html.includes(courses[1].certificate));
   assert.ok(!html.includes(courses[1].url));
   if(preview)assert.match(html,/href="\/cursos"/);
@@ -163,6 +164,8 @@ test('project filters combine category and stack without dropping real items',as
  assert.deepEqual(filterProjects(projects,'Personal','Todos').map(p=>p.id),['a']);
  assert.deepEqual(filterProjects(projects,'Todos','React').map(p=>p.id),['a','b']);
  assert.equal(filterProjects(projects,'Clientes','React').length,0);
+ assert.deepEqual(filterProjects(projects,'Individual','Todos').map(p=>p.id),['a']);
+ assert.deepEqual(filterProjects(projects,'Colaborativo','Todos').map(p=>p.id),['b','c']);
 });
 
 test('section headings share semantic titles and optional descriptions',async()=>{

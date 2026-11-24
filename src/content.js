@@ -1,4 +1,6 @@
 import { placeholderCourses } from './portfolio.js';
+import { technologyGroups } from './technology-catalog.js';
+export { technologyGroups } from './technology-catalog.js';
 export const professionalLinks = { linkedin: 'https://www.linkedin.com/in/carol-cañizares-villacís-1518833ba/' };
 export const profile = {
   name: 'Carol', initials: 'C', role: 'Desarrolladora Full Stack', location: 'Tu ciudad, Ecuador',
@@ -7,14 +9,6 @@ export const profile = {
   about: 'Me interesa todo el recorrido de una idea: entender el problema, diseñar una solución y llevarla a la web. Mi enfoque conecta el detalle visual con la lógica que hace que todo funcione.',
   education: { title: 'Ingeniería de Software', institution: 'Tu universidad o institución', period: 'Añade aquí el período de estudio' },
 };
-export const technologyGroups = [
-  { title: 'Lenguajes', description: 'La base para construir soluciones.', icon: 'code', items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'PHP', 'C#'] },
-  { title: 'Frontend', description: 'Interfaces web y móviles que conectan con las personas.', icon: 'frontend', items: ['React', 'Angular', 'Ionic', 'Vite', 'Tailwind CSS'] },
-  { title: 'Backend', description: 'Lógica, servicios y aplicaciones web.', icon: 'backend', items: ['Spring Boot', 'Laravel', 'ASP.NET Core', 'Express', 'Node.js'] },
-  { title: 'Data y Business Intelligence', description: 'Información organizada, análisis y visualización de datos.', icon: 'database', items: ['SQL Server', 'Oracle', 'PostgreSQL', 'MongoDB', 'Power BI', 'Grafana'] },
-  { title: 'Calidad y pruebas', description: 'Automatización, análisis de código y pruebas de software.', icon: 'quality', items: ['Selenium', 'Playwright', 'pytest', 'SonarQube', 'JUnit'] },
-  { title: 'CI/CD y despliegue', description: 'Integración continua y publicación de aplicaciones.', icon: 'deploy', items: ['Docker', 'Jenkins', 'Heroku', 'Railway'] },
-];
 export const technologies = technologyGroups.flatMap(group => group.items);
 export const projects = [
   { id: 'orbit', title: 'Orbit', subtitle: 'Un espacio para que las ideas avancen.', category: 'Personal', type: 'PRODUCTIVIDAD', tech: ['React', 'Express', 'PostgreSQL'], style: 'orbit', description: 'Problema: las ideas se dispersan entre notas y chats. Solución: un espacio para organizar proyectos, visualizar tareas y colaborar desde un solo lugar.', contribution: 'Ejemplo de alcance: diseño de interfaz, componentes de React y API de proyectos.', collaborators: '', github: '', url: '', example: true },

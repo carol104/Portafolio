@@ -5,6 +5,34 @@ import {contentSchema,publicContent,normalizeContent} from './content-model.js';
 import {passwordHash,passwordMatches} from './admin.js';
 import {filterCourses} from '../src/portfolio.js';
 import {updateInterests} from './interests-migration.js';
+import {updateTechnologyGroups} from './aptitudes-migration.js';
+
+test('aptitudes catalog covers requested skills with at least three entries per category',()=>{
+ const groups=initialContent.technologyGroups;
+ const all=new Set(groups.flatMap(group=>group.items));
+ const requested=['Arquitectura orientada a servicios (SOA)','Odoo','Normas ISO','Bootstrap','jQuery','Java Servlet','Tomcat','Desarrollo de API','Microservicios','MySQL','Eclipse','Trello','JIRA','Desarrollo de Software','GitHub','Git','Vercel V0','JUnit','Selenium','MongoDB','SQL Server Management Studio','Spring Boot','Laravel','Express.js','Tailwind CSS','Ionic Framework','Angular','SonarQube','Pytest','Grafana','Blazor','JavaScript','Oracle Database','Scrum','PhpMyAdmin','PHP','React Native','Jenkins','TypeScript','HTML','ASP.NET','SQL Server Integration Services (SSIS)','PostgreSQL','Node.js','React.js','Docker','C#','Análisis de datos','Data Science Essentials With Python','Seguridad de redes','Network Support and Security','Java','Linux','Python'];
+ for(const item of requested)assert.ok(all.has(item),item);
+ for(const group of groups)assert.ok(group.items.length>=3,group.title);
+ assert.equal(all.size,groups.flatMap(group=>group.items).length);
+});
+
+test('aptitudes migration redistributes legacy data and preserves custom content and visibility',()=>{
+ const legacy=[
+  {id:'languages',icon:'code',title:'Mis lenguajes',description:'Personalizado',items:['Python','Rust'],visible:false},
+  {id:'db',icon:'database',title:'Data y Business Intelligence',items:['Oracle','SQL Server','Grafana','Power BI'],visible:true},
+  {id:'ui',icon:'frontend',title:'Mi frontend',items:['React','Ionic','Svelte'],visible:true},
+ ];
+ const updated=updateTechnologyGroups(legacy);
+ const languages=updated.find(group=>group.id==='languages');
+ assert.equal(languages.title,'Mis lenguajes');assert.equal(languages.visible,false);assert.ok(languages.items.includes('Rust'));
+ const db=updated.find(group=>group.id==='db');
+ assert.equal(db.title,'Bases de datos');assert.ok(db.items.includes('Oracle Database'));assert.ok(!db.items.includes('Grafana'));
+ const ui=updated.find(group=>group.id==='ui');assert.ok(ui.items.includes('React.js'));assert.ok(ui.items.includes('Svelte'));assert.ok(!ui.items.includes('React'));
+ assert.ok(updated.find(group=>group.title==='Datos y análisis').items.includes('Grafana'));
+ assert.deepEqual(updateTechnologyGroups(updated),updated);
+ const draft=structuredClone(initialContent);draft.technologyGroups=updated;
+ assert.equal(contentSchema.safeParse(draft).success,true);
+});
 
 test('course filters support all types and legacy courses',()=>{
  const courses=[{id:'legacy'},{id:'course',kind:'Curso'},{id:'cert',kind:'Certificación'},{id:'event',kind:'Evento'}];

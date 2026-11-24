@@ -17,6 +17,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ProjectsPage from './ProjectsPage';
 import CoursesPage from './CoursesPage';
+import AptitudesPage from './AptitudesPage';
 import ContactPage from './ContactPage';
 import ProjectsSection from './components/ProjectsSection';
 import ProjectDialog from './components/ProjectDialog';
@@ -124,7 +125,7 @@ function App() {
                     </Reveal>
                 </div>
             </section>
-            <Technologies />
+            <Technologies preview />
             <ProjectsSection projects={projects} onOpen={openProject} preview />
             <section id="servicios" className="section experience">
                 <Reveal className="experience-intro">
@@ -154,6 +155,10 @@ function App() {
 
 function PageRouter() {
     const { path } = useRouter();
+
+    if (path === '/aptitudes') {
+        return <AptitudesPage />;
+    }
 
     if (path === '/proyectos') {
         return <ProjectsPage />;

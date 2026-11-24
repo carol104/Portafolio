@@ -19,6 +19,7 @@ export default function Header({ activeSection = '' }) {
     { label: 'Inicio', path: '/' },
     { label: 'Proyectos', path: '/proyectos' },
     { label: 'Cursos', path: '/cursos' },
+    { label: 'Aptitudes y tecnologías', path: '/aptitudes' },
 
   ];
   const sections = [

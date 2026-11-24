@@ -5,19 +5,28 @@ import TechnologyLogo from './TechnologyLogo';
 import SectionHeading from './components/SectionHeading';
 import SpotlightCard from './components/SpotlightCard';
 import { fadeUp, Stagger } from './motion';
+import { catalogGroups, canonicalTechnology, normalizeTechnology } from './technology-catalog';
+import MagneticButton from './components/MagneticButton';
 
 const icons = { code: Code2, frontend: PanelsTopLeft, backend: Server, database: Database, deploy: Container, quality: ShieldCheck };
 
-export default function Technologies() {
+export default function Technologies({ preview = false }) {
   const { technologyGroups } = useContent();
+  const groups = preview ? [0, 3, 2].flatMap(index => {
+    const seed = catalogGroups[index];
+    const group = technologyGroups.find(group => group.id === seed.id) || technologyGroups.find(group => group.icon === seed.icon);
+    if (!group) return [];
+    const allowed = new Set(seed.items.map(normalizeTechnology));
+    return [{ ...group, title: seed.title, description: seed.description, items: group.items.filter(item => allowed.has(normalizeTechnology(canonicalTechnology(item)))) }];
+  }) : technologyGroups;
   return (
     <section id="tecnologias" className="section technology-section" aria-labelledby="technology-title">
-      <SectionHeading id="technology-title" kicker="MI CAJA DE HERRAMIENTAS" text="Lenguajes, frameworks y herramientas que he utilizado para dar forma a mis proyectos.">
-        Tecnologías con las<br />que <span>trabajo.</span>
+      <SectionHeading id="technology-title" kicker="MI CAJA DE HERRAMIENTAS" text={preview ? 'Lenguajes, bases de datos y backend para dar forma a mis proyectos.' : 'Tecnologías, herramientas y aptitudes organizadas por área.'}>
+        {preview ? <>Tecnologías con las<br />que <span>trabajo.</span></> : <>Mis áreas de <span>conocimiento.</span></>}
       </SectionHeading>
       <Stagger className="technology-grid">
-        {technologyGroups.map((group) => {
-          const Icon = icons[group.icon];
+        {groups.map((group) => {
+          const Icon = icons[group.icon] || Code2;
           return (
             <SpotlightCard key={group.id} className={`technology-card technology-${group.icon}`} variants={fadeUp}>
               <div className="technology-card-top"><span className="technology-icon"><Icon size={23} /></span></div>
@@ -28,6 +37,7 @@ export default function Technologies() {
           );
         })}
       </Stagger>
+      {preview && <div className="section-more-action"><MagneticButton className="button secondary button-more" href="/aptitudes">Ver todas las aptitudes y tecnologías</MagneticButton></div>}
     </section>
   );
 }

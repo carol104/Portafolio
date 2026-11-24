@@ -64,7 +64,7 @@ test('project cards and dialogs expose repository and collaborator links safely'
 });
 
 test('page navigation points to dedicated routes and Home alone has section navigation',async()=>{
- for(const path of ['/','/proyectos','/cursos','/contacto']){
+ for(const path of ['/','/proyectos','/cursos','/aptitudes','/contacto']){
   const {default:Header}=await component('Header.jsx',{
    './Brand':{__esModule:true,default:()=>React.createElement('a',{href:'/'},'Portfolio')},
    './MagneticButton':{__esModule:true,default:({children,...props})=>React.createElement('a',props,children)},
@@ -74,7 +74,7 @@ test('page navigation points to dedicated routes and Home alone has section navi
   });
   const html=renderToStaticMarkup(React.createElement(Header,{activeSection:'servicios'}));
   const primary=html.match(/<nav id="portfolio-navigation"[\s\S]*?<\/nav>/)[0];
-  assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(match=>match[1]),['/','/proyectos','/cursos']);
+  assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(match=>match[1]),['/','/proyectos','/cursos','/aptitudes']);
   if(path!=='/contacto')assert.match(primary,new RegExp(`href="${path}"[^>]*aria-current="page"`));
   assert.equal(html.includes('aria-label="Secciones de Home"'),path==='/');
   assert.match(html,/href="\/contacto"/);
@@ -177,9 +177,9 @@ test('section headings share semantic titles and optional descriptions',async()=
 test('technology logos and Data & Business Intelligence box are configured with svgs',async()=>{
  const {technologyLogoName}=await component('../TechnologyLogo.jsx');
  const {technologyGroups}=await import('../content.js');
- const biGroup=technologyGroups.find(g=>g.icon==='database');
+ const biGroup=technologyGroups.find(g=>g.title==='Datos y análisis');
  assert.ok(biGroup);
- assert.equal(biGroup.title,'Data y Business Intelligence');
+ assert.equal(biGroup.title,'Datos y análisis');
  assert.ok(biGroup.items.includes('Grafana'));
  assert.ok(biGroup.items.includes('Power BI'));
  assert.equal(technologyLogoName('Grafana'),'grafana');
@@ -187,6 +187,27 @@ test('technology logos and Data & Business Intelligence box are configured with 
  const {access}=await import('node:fs/promises');
  await access(new URL('../../public/technology-logos/grafana.svg',import.meta.url));
  await access(new URL('../../public/technology-logos/powerbi.svg',import.meta.url));
+});
+
+test('technology preview contains only languages, databases and backend; catalog keeps every area',async()=>{
+ const {catalogGroups}=await import('../technology-catalog.js');
+ const passthrough=({children})=>React.createElement('div',null,children);
+ const {default:Technologies}=await component('../Technologies.jsx',{
+  './ContentContext':{useContent:()=>({technologyGroups:catalogGroups})},
+  './technologies.css':{},
+  './technology-catalog':await import('../technology-catalog.js'),
+  './TechnologyLogo':{__esModule:true,default:()=>null},
+  './components/SectionHeading':{__esModule:true,default:passthrough},
+  './components/SpotlightCard':{__esModule:true,default:({children})=>React.createElement('article',null,children)},
+  './components/MagneticButton':{__esModule:true,default:({href,children})=>React.createElement('a',{href},children)},
+  './motion':{Stagger:passthrough,fadeUp:{}},
+ });
+ for(const preview of [true,false]){
+  const html=renderToStaticMarkup(React.createElement(Technologies,{preview}));
+  const titles=[...html.matchAll(/<h3>(.*?)<\/h3>/g)].map(match=>match[1]);
+  assert.deepEqual(titles,preview?['Lenguajes','Bases de datos','Backend']:catalogGroups.map(group=>group.title));
+  if(preview){assert.match(html,/href="\/aptitudes"/);assert.ok(!html.includes('Grafana'));assert.ok(!html.includes('React.js'));}
+ }
 });
 
 test('platform logos for Cisco and Udemy resolve correctly and svgs exist',async()=>{

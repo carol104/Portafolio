@@ -55,7 +55,7 @@ export default function ProjectsSection({ projects, onOpen, preview = false }) {
                   onChange={(e) => setTech(e.target.value)}
                   aria-label="Filtrar proyectos por tecnología"
                 >
-                  <option value="Todos">Todas las tecnologías ({techs.length})</option>
+                  <option value="Todos">Todas las tecnologías</option>
                   {techs.map((item) => (
                     <option key={item} value={item}>
                       {item}
@@ -66,9 +66,6 @@ export default function ProjectsSection({ projects, onOpen, preview = false }) {
             )}
           </div>
 
-          <span className="project-counter" role="status">
-            {String(filtered.length).padStart(2, '0')} {filtered.length === 1 ? 'proyecto' : 'proyectos'}
-          </span>
         </div>
       )}
 
@@ -78,7 +75,6 @@ export default function ProjectsSection({ projects, onOpen, preview = false }) {
             <ProjectCard
               key={project.id}
               project={project}
-              index={allProjects.indexOf(project)}
               onOpen={onOpen}
             />
           ))}

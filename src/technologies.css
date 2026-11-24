@@ -16,7 +16,8 @@
 .technology-card li:hover .technology-logo{transform:scale(1.09) rotate(-4deg)}
 .technology-logo.logo-express img{filter:brightness(0) invert(.92)}
 .technology-name{min-width:0;overflow-wrap:anywhere;font-weight:500;letter-spacing:.1px}
-.technology-monogram{font:600 12px Consolas,monospace;color:#9fc5ff;letter-spacing:.5px}
+.technology-monogram{font:700 21px 'Segoe UI',sans-serif;color:#fff;line-height:1;letter-spacing:0;text-shadow:0 1px 3px #0002}
+.technology-logo.logo-github img{filter:brightness(0) invert(.92)}
 @media(max-width:1050px){.technology-grid{gap:13px}.technology-card{padding:22px}.header nav{margin-left:0;gap:22px}}
 @media(max-width:760px){.technology-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.technology-card,.technology-card:nth-child(n+4){grid-column:span 1}.technology-card:last-child{grid-column:span 1}.technology-card{padding:21px}.technology-card-top{margin-bottom:19px}.header nav{gap:13px}.header nav a{font-size:var(--font-small)}}
 @media(max-width:480px){.technology-grid{grid-template-columns:1fr;gap:13px}.technology-card,.technology-card:nth-child(n+4){grid-column:auto}.technology-card{padding:23px}.technology-card-top{margin-bottom:16px}.technology-card>p{margin-bottom:18px}.technology-card li{font-size:var(--font-small)}}

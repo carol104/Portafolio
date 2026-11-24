@@ -22,6 +22,7 @@ import ContactPage from './ContactPage';
 import ProjectsSection from './components/ProjectsSection';
 import ProjectDialog from './components/ProjectDialog';
 import Courses from './Courses';
+import ServicesSection from './components/ServicesSection';
 import { MotionRoot, Reveal, Stagger, fadeUp, m } from './motion';
 
 const interestIcons = { terminal: Terminal, database: Database, compass: Compass, music: Music2, game: Gamepad2, idea: Lightbulb, camera: Camera, bird: Binoculars, nature: Trees, sports: Volleyball };
@@ -121,21 +122,13 @@ function App() {
                         <p className="large-text">{profile.about}</p>
                         <p>{profile.objective}</p>
                         <div className="about-values"><span><Check size={15} /> Atención al detalle</span><span><Check size={15} /> Aprendizaje continuo</span><span><Check size={15} /> Trabajo en equipo</span><span><Check size={15} /> Soluciones con propósito</span></div>
-                        {profile.showEducation && <div className="education"><div><small>FORMACIÓN {profile.isExample && '· POR PERSONALIZAR'}</small><h3>{profile.education.title}</h3><p>{[profile.education.institution, profile.education.period].filter(Boolean).join(' · ')}</p></div></div>}
+                        {profile.showEducation && <div className="education"><div><small>FORMACIÓN</small><h3>{profile.education.title}</h3><p>{[profile.education.institution, profile.education.period].filter(Boolean).join(' · ')}</p></div></div>}
                     </Reveal>
                 </div>
             </section>
             <Technologies preview />
             <ProjectsSection projects={projects} onOpen={openProject} preview />
-            <section id="servicios" className="section experience">
-                <Reveal className="experience-intro">
-                    <p className="eyebrow">SERVICIOS</p>
-                    <h2>Tu idea.<br />Una solución.<br /><span>Hecha a medida.</span></h2>
-                    <p>Construyo soluciones digitales que conectan con las personas y responden a lo que tu proyecto necesita.</p>
-                    <MagneticButton href="/contacto" className="text-link">Hablemos de tu proyecto <ArrowUpRight size={17} /></MagneticButton>
-                </Reveal>
-                <div className="timeline">{experience.map((e, i) => <Reveal as="article" key={e.id} delay={i * 0.06}><span className="timeline-node" /><div className="timeline-top"><small>{e.type}</small><span>{String(i + 1).padStart(2, '0')}</span></div><h3>{e.title}</h3><h4>{e.place}</h4><p>{e.text}</p></Reveal>)}</div>
-            </section>
+            <ServicesSection services={experience} />
             <Courses courses={courses} preview />
             <section id="intereses" className="section interests">
                 <SectionTitle kicker="MÁS ALLÁ DEL CÓDIGO">Hobbies e <span>intereses técnicos.</span></SectionTitle>

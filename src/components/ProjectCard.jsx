@@ -7,7 +7,7 @@ import SpotlightCard from './SpotlightCard';
 import { fadeUp } from '../motion';
 import { categoryLabel, isTeamProject, projectRepositories } from '../portfolio';
 
-export default function ProjectCard({ project, index, onOpen }) {
+export default function ProjectCard({ project, onOpen }) {
   const repositories = projectRepositories(project);
   const open = event => onOpen(project, event.currentTarget);
   return (
@@ -29,7 +29,6 @@ export default function ProjectCard({ project, index, onOpen }) {
       <div className="project-content">
       <div className="project-meta">
         <span>{project.type}</span>
-        <small>{String(index + 1).padStart(2, '0')}</small>
       </div>
       <p className="project-category">{categoryLabel(project.category)}</p>
       <div className="project-heading"><h3><button type="button" className="project-title" onClick={open}>{project.title}<ArrowUpRight size={22} aria-hidden="true"/></button></h3>

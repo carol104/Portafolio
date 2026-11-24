@@ -2,7 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
-import PDFDocument from 'pdfkit';
+import { createResume } from './resume.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createContentStore } from './content-store.js';
@@ -35,27 +35,11 @@ export function createApp({pool,production=false,trustProxy=0,logger=console,con
   try{await pool.query('INSERT INTO contact_messages (name, email, subject, message, consent_at) VALUES ($1, $2, $3, $4, NOW())',[name,email,subject,message]);res.status(201).json({message:'Mensaje guardado correctamente.'})}catch(error){logger.error('Contact database error:',error.code||'database unavailable');res.status(503).json({error:'No podemos guardar mensajes en este momento. Por favor, inténtalo más tarde.'})}
  });
  app.get('/api/resume',async(_req,res)=>{
-  let profile,projects,technologyGroups;
-  try{({data:{profile,projects,technologyGroups}}=await contentStore.read())}catch{({profile,projects,technologyGroups}=initialContent)}
-  if(profile.resumeUrl)return res.redirect(profile.resumeUrl);
-  const technologies=technologyGroups.filter(group=>group.visible).flatMap(group=>group.items);
+  let data;
+  try{({data}=await contentStore.read())}catch{data=initialContent}
+  if(data.profile.resumeUrl)return res.redirect(data.profile.resumeUrl);
   res.type('pdf').set('Content-Disposition','inline; filename="hoja-de-vida.pdf"');
-  const pdf=new PDFDocument({size:'A4',margin:50,info:{Title:`Hoja de vida - ${profile.name}`}});
-  pdf.pipe(res);
-  const text=(value,limit=350)=>{const clean=value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[–—]/g,'-');return clean.length>limit?clean.slice(0,limit-3)+'...':clean};
-  const heading=value=>{pdf.moveDown(.7).font('Helvetica-Bold').fontSize(11).fillColor('#274e85').text(text(value));pdf.moveDown(.4).font('Helvetica').fontSize(10).fillColor('#30425b')};
-  if(profile.isExample)pdf.fontSize(9).fillColor('#697b91').text('CONTENIDO DE EJEMPLO - PERSONALIZAR ANTES DE COMPARTIR').moveDown(1.5);
-  pdf.font('Helvetica-Bold').fontSize(29).fillColor('#11294b').text(text(profile.name,75));
-  pdf.moveDown(.3).font('Helvetica').fontSize(13).text(text(profile.role));
-  pdf.moveDown(.6).fontSize(9).fillColor('#60748d').text(text([profile.location,profile.email,profile.github,profile.linkedin].filter(Boolean).join(' | ')),{lineGap:4});
-  heading('OBJETIVO PROFESIONAL');pdf.text(text(profile.objective),{lineGap:5});
-  heading('PERFIL');pdf.text(text(profile.about),{lineGap:5});
-  heading('TECNOLOGIAS');pdf.text(technologies.join('  /  '),{lineGap:5});
-  if(profile.showEducation){heading('FORMACION');pdf.font('Helvetica-Bold').text(text(profile.education.title));pdf.font('Helvetica').text(text(`${profile.education.institution} | ${profile.education.period}`),{lineGap:4});}
-  heading('PROYECTOS SELECCIONADOS');
-  for(const project of projects.filter(project=>project.visible).slice(0,3)){pdf.font('Helvetica-Bold').text(text(`${project.title}${project.example?' (concepto de ejemplo)':''}`));pdf.font('Helvetica').text(text(project.description),{lineGap:3});pdf.fontSize(9).fillColor('#60748d').text(project.tech.join(' / '));pdf.moveDown(.6).fontSize(10).fillColor('#30425b')}
-  if(profile.isExample){pdf.moveDown().fontSize(9).fillColor('#697b91').text('Contenido de ejemplo. Actualiza tu perfil y proyectos desde el panel privado de administracion.');}
-  pdf.end();
+  createResume(data).pipe(res);
  });
  app.use('/api',(_req,res)=>res.status(404).json({error:'Recurso no encontrado.'}));
  if(production){app.use(express.static(path.join(root,'dist')));app.get('/{*path}',(_req,res)=>res.sendFile(path.join(root,'dist','index.html')))}

@@ -3,3 +3,5 @@
 Local SVGs from [Devicon v2.17.0](https://github.com/devicons/devicon/tree/v2.17.0), under its MIT license (included here). Logos and brand names belong to their respective owners. The portfolio serves these files from its own server; it does not contact an icon CDN at runtime.
 
 Regenerate with `python scripts/download-technology-logos.py`.
+
+Odoo, phpMyAdmin and v0 SVGs are from [Simple Icons](https://github.com/simple-icons/simple-icons/tree/develop/icons), under CC0 (see `SIMPLE-ICONS-LICENSE.md`). Their brand colors are applied locally. Technologies and aptitudes without a local logo use one initial on a colored background; Scrum uses purple.

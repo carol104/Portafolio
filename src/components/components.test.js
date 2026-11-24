@@ -103,6 +103,7 @@ test('Home previews limit cards and link to complete catalogs without limiting d
  for(const preview of [true,false]){
   const html=renderToStaticMarkup(React.createElement(Projects,{projects,preview}));
   assert.equal([...html.matchAll(/data-project=/g)].length,preview?4:6);
+  assert.ok(!html.includes('project-counter'));
   if(preview)assert.match(html,/href="\/proyectos"/);
  }
  const {default:Courses}=await component('../Courses.jsx',{
@@ -126,6 +127,7 @@ test('Home previews limit cards and link to complete catalogs without limiting d
  for(const preview of [true,false]){
   const html=renderToStaticMarkup(React.createElement(Courses,{courses,preview}));
   assert.equal([...html.matchAll(/class="course-title"/g)].length,preview?2:5);
+  assert.ok(!html.includes('resultados'));
   assert.ok(html.includes(courses[0].certificate));
   assert.match(html, /dateTime="2026-11-16"/i);
   assert.match(html, /dateTime="2026-12-16"/i);
@@ -175,7 +177,7 @@ test('section headings share semantic titles and optional descriptions',async()=
 });
 
 test('technology logos and Data & Business Intelligence box are configured with svgs',async()=>{
- const {technologyLogoName}=await component('../TechnologyLogo.jsx');
+ const {technologyLogoName}=await import('../technology-logos.js');
  const {technologyGroups}=await import('../content.js');
  const biGroup=technologyGroups.find(g=>g.title==='Datos y análisis');
  assert.ok(biGroup);
@@ -189,11 +191,33 @@ test('technology logos and Data & Business Intelligence box are configured with 
  await access(new URL('../../public/technology-logos/powerbi.svg',import.meta.url));
 });
 
+test('technology branding uses local logos or one colored initial, with purple Scrum',async()=>{
+ const branding=await import('../technology-logos.js');
+ const {technologyGroups}=await import('../technology-catalog.js');
+ const {access}=await import('node:fs/promises');
+ const {default:Logo}=await component('../TechnologyLogo.jsx',{'./technology-logos.js':branding});
+ for(const name of technologyGroups.flatMap(group=>group.items)){
+  const logo=branding.technologyLogoName(name);
+  const html=renderToStaticMarkup(React.createElement(Logo,{name}));
+  if(logo){
+   await access(new URL(`../../public/technology-logos/${logo}.svg`,import.meta.url));
+   assert.ok(html.includes(`/technology-logos/${logo}.svg`));
+  }else{
+   const fallback=branding.technologyFallback(name);
+   assert.equal(Array.from(fallback.initial).length,1);
+   assert.ok(html.includes(`>${fallback.initial}</span>`));
+   assert.ok(html.includes(`background:${fallback.color}`));
+  }
+ }
+ assert.deepEqual(branding.technologyFallback('Scrum'),{initial:'S',color:'#7C3AED'});
+ assert.ok(!technologyGroups.flatMap(group=>group.items).includes('ASP.NET Core'));
+});
+
 test('technology preview contains only languages, databases and backend; catalog keeps every area',async()=>{
  const {catalogGroups}=await import('../technology-catalog.js');
  const passthrough=({children})=>React.createElement('div',null,children);
  const {default:Technologies}=await component('../Technologies.jsx',{
-  './ContentContext':{useContent:()=>({technologyGroups:catalogGroups})},
+  './ContentContext':{useContent:()=>({technologyGroups:catalogGroups.map(group=>group.icon==='backend'?{...group,items:[...group.items,'ASP.NET Core']}:group)})},
   './technologies.css':{},
   './technology-catalog':await import('../technology-catalog.js'),
   './TechnologyLogo':{__esModule:true,default:()=>null},
@@ -205,6 +229,7 @@ test('technology preview contains only languages, databases and backend; catalog
  for(const preview of [true,false]){
   const html=renderToStaticMarkup(React.createElement(Technologies,{preview}));
   const titles=[...html.matchAll(/<h3>(.*?)<\/h3>/g)].map(match=>match[1]);
+  assert.ok(!html.includes('ASP.NET Core'));
   assert.deepEqual(titles,preview?['Lenguajes','Bases de datos','Backend']:catalogGroups.map(group=>group.title));
   if(preview){assert.match(html,/href="\/aptitudes"/);assert.ok(!html.includes('Grafana'));assert.ok(!html.includes('React.js'));}
  }

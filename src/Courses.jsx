@@ -35,7 +35,6 @@ export default function Courses({ courses, preview = false }) {
             </button>
           ))}
         </div>
-        <span role="status">{filtered.length} {filtered.length === 1 ? 'resultado' : 'resultados'}</span>
       </div>
 
       {items.length ? (

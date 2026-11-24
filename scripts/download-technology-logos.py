@@ -21,6 +21,12 @@ icons={
  'playwright':'playwright/playwright-original.svg','pytest':'pytest/pytest-original.svg',
  'sonarqube':'sonarqube/sonarqube-original.svg','junit':'junit/junit-original.svg',
  'grafana':'grafana/grafana-original.svg',
+ 'html':'html5/html5-original.svg','bootstrap':'bootstrap/bootstrap-original.svg',
+ 'jquery':'jquery/jquery-original.svg','blazor':'blazor/blazor-original.svg',
+ 'mysql':'mysql/mysql-original.svg','tomcat':'tomcat/tomcat-original.svg',
+ 'eclipse':'eclipse/eclipse-original.svg','git':'git/git-original.svg',
+ 'github':'github/github-original.svg','linux':'linux/linux-original.svg',
+ 'trello':'trello/trello-original.svg','jira':'jira/jira-original.svg',
 }
 target=Path('public/technology-logos');target.mkdir(parents=True,exist_ok=True)
 def download(item):

@@ -1,0 +1,85 @@
+.custom-cursor {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.custom-cursor.is-visible {
+  opacity: 1;
+}
+
+.custom-cursor__ring,
+.custom-cursor__dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+
+.custom-cursor span {
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.custom-cursor__ring span {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgb(255 255 255 / 55%);
+  transition: width 180ms ease, height 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.custom-cursor__dot span {
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  box-shadow: 0 0 2px rgb(8 15 33 / 25%);
+}
+
+.custom-cursor.is-interactive .custom-cursor__ring span {
+  width: 60px;
+  height: 60px;
+  border-color: rgb(255 255 255 / 85%);
+  background: rgb(255 255 255 / 5%);
+}
+
+.custom-cursor.is-pressed .custom-cursor__ring span {
+  width: 38px;
+  height: 38px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html.has-custom-cursor,
+  html.has-custom-cursor * {
+    cursor: none !important;
+  }
+
+  /* Native dialogs occupy the browser's top layer, above this overlay. */
+  html.has-custom-cursor:has(dialog[open]),
+  html.has-custom-cursor:has(dialog[open]) * {
+    cursor: auto !important;
+  }
+
+  html:has(dialog[open]) .custom-cursor {
+    display: none;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .custom-cursor {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .custom-cursor,
+  .custom-cursor span {
+    transition: none;
+  }
+}

@@ -14,6 +14,8 @@ import SocialLinks from './components/SocialLinks';
 import MagneticButton from './components/MagneticButton';
 import SpotlightCard from './components/SpotlightCard';
 import Header from './components/Header';
+import CustomCursor from './components/CustomCursor';
+import LuminousExperience from './components/LuminousExperience';
 import Footer from './components/Footer';
 import ProjectsPage from './ProjectsPage';
 import CoursesPage from './CoursesPage';
@@ -174,6 +176,8 @@ createRoot(document.getElementById('root')).render(
         <ContentProvider>
             <RouterProvider>
                 <MotionRoot>
+                    <CustomCursor />
+                    <LuminousExperience />
                     <PageRouter />
                 </MotionRoot>
             </RouterProvider>

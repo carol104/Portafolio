@@ -1,0 +1,199 @@
+#root:has(.cosmic-atmosphere) {
+  position: relative;
+  isolation: isolate;
+}
+
+.cosmic-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(165deg, #080e20, #070c19 60%, #072938);
+}
+
+.cosmic-atmosphere__aurora {
+  position: absolute;
+  inset: -15%;
+  background: radial-gradient(ellipse at 12% 8%, #18bdd52b, transparent 38%),
+    radial-gradient(ellipse at 48% 4%, #315dce33, transparent 43%),
+    radial-gradient(ellipse at 95% 95%, #18a5ac20, transparent 42%);
+  animation: cosmic-drift 20s ease-in-out infinite alternate;
+}
+
+.cosmic-star {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: #c9edff;
+  box-shadow: 0 0 6px #8be1ff80;
+  opacity: .25;
+  animation: cosmic-twinkle 7s ease-in-out var(--delay) infinite;
+}
+
+.hero h1,
+.subpage-title,
+.section-heading h2 {
+  text-shadow: 0 0 32px #a6d6ff20;
+}
+
+.hero h1 .headline-accent,
+.subpage-title > span,
+.section-heading h2 span {
+  color: #7de9e4;
+  background: linear-gradient(110deg, #82b4ff 8%, #7df2d4 38%, #e1ffff 50%, #7ddde8 62%, #82b4ff 92%);
+  background-size: 240% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 14px #66dfe82b);
+  animation: luminous-lettering 9s ease-in-out infinite;
+}
+
+.section-heading .eyebrow,
+.hero .hello,
+.subpage-badge {
+  color: #87dfef;
+  text-shadow: 0 0 18px #58d5ed35;
+}
+
+.section-heading > div::after {
+  content: '';
+  display: block;
+  width: 72px;
+  height: 2px;
+  margin-top: 18px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #7aaaff, #77eed9, transparent);
+  box-shadow: 0 0 12px #70cfff70;
+  transform-origin: left;
+  animation: luminous-line-enter 1.2s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.luminous-rail {
+  position: fixed;
+  z-index: 8;
+  right: 5px;
+  top: 16vh;
+  height: 76vh;
+  width: 68px;
+}
+
+.luminous-rail > svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.luminous-rail__halo {
+  opacity: .16;
+}
+
+.luminous-rail__head {
+  filter: drop-shadow(0 0 6px #82aaff);
+}
+
+.luminous-rail__stop {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.luminous-rail__stop i {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid #8196aa;
+  border-radius: 50%;
+  background: #090f1d;
+  transition: background .3s, border-color .3s, box-shadow .3s;
+}
+
+.luminous-rail__stop span {
+  position: absolute;
+  right: 29px;
+  color: #9eaec6;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: color .3s, text-shadow .3s;
+}
+
+.luminous-rail__stop.is-reached i {
+  background: #83b1ff;
+  border-color: #a2c5ff;
+  box-shadow: 0 0 12px #7aabff80;
+}
+
+.luminous-rail__stop[aria-current] span,
+.luminous-rail__stop:hover span {
+  color: #b9faff;
+  text-shadow: 0 0 10px #7cddff80;
+}
+
+.luminous-mobile-progress {
+  display: none;
+  position: fixed;
+  z-index: 40;
+  inset: 0 0 auto;
+  height: 2px;
+  pointer-events: none;
+}
+
+.luminous-mobile-progress span {
+  display: block;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, #82aaff, #76eed8);
+  box-shadow: 0 0 9px #71e1ed;
+}
+
+@keyframes luminous-lettering {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes cosmic-drift {
+  to { transform: translate3d(3%, 2%, 0) scale(1.05); }
+}
+
+@keyframes cosmic-twinkle {
+  0%, 100% { opacity: .16; }
+  50% { opacity: .55; }
+}
+
+@keyframes luminous-line-enter {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
+@media (max-width: 1399px) {
+  .luminous-rail { right: 0; width: 44px; }
+  .luminous-rail__stop span { right: 24px; font-size: 9px; }
+}
+
+@media (max-width: 1199px) {
+  .luminous-rail { display: none; }
+  .luminous-mobile-progress { display: block; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-atmosphere__aurora,
+  .cosmic-star,
+  .hero h1 .headline-accent,
+  .subpage-title > span,
+  .section-heading h2 span,
+  .section-heading > div::after { animation: none; }
+  .luminous-rail__stop i,
+  .luminous-rail__stop span { transition: none; }
+}

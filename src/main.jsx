@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowUpRight, ArrowDown, Download, MapPin, Check, Terminal, Database, Compass, Gamepad2, Music2, Lightbulb, Code2, Camera, Binoculars, Braces, Trees, Volleyball } from 'lucide-react';
+import { ArrowUpRight, ArrowDown, Download, MapPin, Check, Terminal, Database, Compass, Gamepad2, Music2, Lightbulb, Code2, Camera, Binoculars, Braces, Trees, Volleyball, GraduationCap } from 'lucide-react';
 import { ContentProvider, useContent } from './ContentContext';
 import { RouterProvider, useRouter } from './router';
 import './public-content.css';
@@ -124,7 +124,7 @@ function App() {
                         <p className="large-text">{profile.about}</p>
                         <p>{profile.objective}</p>
                         <div className="about-values"><span><Check size={15} /> Atención al detalle</span><span><Check size={15} /> Aprendizaje continuo</span><span><Check size={15} /> Trabajo en equipo</span><span><Check size={15} /> Soluciones con propósito</span></div>
-                        {profile.showEducation && <div className="education"><div><small>FORMACIÓN</small><h3>{profile.education.title}</h3><p>{[profile.education.institution, profile.education.period].filter(Boolean).join(' · ')}</p></div></div>}
+                        {profile.showEducation && <div className="education"><div><small className="education-label"><GraduationCap size={20} aria-hidden="true" />FORMACIÓN ACADÉMICA</small><h3>{profile.education.title}</h3><p>{[profile.education.institution, profile.education.period].filter(Boolean).join(' · ')}</p></div></div>}
                     </Reveal>
                 </div>
             </section>

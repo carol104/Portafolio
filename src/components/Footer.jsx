@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import Brand from './Brand';
 import { useContent } from '../ContentContext';
 import { useRouter } from '../router';
@@ -21,14 +21,10 @@ export default function Footer() {
     <footer className="footer">
       <Brand name={appearance.brand} href="/" />
       <a href={isHome ? '#inicio' : '#'} onClick={scrollToTop}>
-        Volver arriba <ArrowUpRight size={15} />
+        Volver <ArrowUpRight size={15} />
       </a>
       <small>
         © {new Date().getFullYear()} {profile.name}
-        {profile.isExample ? ' · Contenido' : ''}{' '}
-        <a className="admin-entry" href="/admin">
-          Administrar
-        </a>
       </small>
     </footer>
   );

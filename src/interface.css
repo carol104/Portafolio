@@ -267,6 +267,16 @@ body {
   gap: 16px;
 }
 
+.education-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.education-label svg {
+  color: #8db8ff;
+}
+
 .education {
   align-items: flex-start;
   padding-top: 26px;

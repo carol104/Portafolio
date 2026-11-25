@@ -22,7 +22,7 @@ export default function Technologies({ preview = false }) {
   }) : pageGroups;
   return (
     <section id="tecnologias" className="section technology-section" aria-labelledby="technology-title">
-      <SectionHeading id="technology-title" kicker="MI CAJA DE HERRAMIENTAS" text={preview ? 'Lenguajes, bases de datos y backend para dar forma a mis proyectos.' : 'Tecnologías, herramientas y aptitudes organizadas por área.'}>
+      <SectionHeading id="technology-title" kicker="MI CAJA DE HERRAMIENTAS" text={preview ? 'tecnologías que utilizo para desarrollar mis soluciones' : 'Tecnologías, herramientas y aptitudes organizadas por área.'}>
         {preview ? <>Tecnologías con las<br />que <span>trabajo.</span></> : <>Mis áreas de <span>conocimiento.</span></>}
       </SectionHeading>
       <Stagger className="technology-grid">

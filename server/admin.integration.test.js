@@ -8,6 +8,8 @@ import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {createApp} from './app.js';
 import {createContentStore} from './content-store.js';
+import {contentSchema} from './content-model.js';
+import {verifiedProjectDetails} from './project-details-migration.js';
 
 test('admin setup, authentication, uploads, publication and persistence with PostgreSQL',async t=>{
  const connection=new URL(process.env.DATABASE_URL);const control=new pg.Pool({connectionString:connection.href});
@@ -20,6 +22,29 @@ test('admin setup, authentication, uploads, publication and persistence with Pos
   await pool.query(await readFile(new URL('./schema.sql',import.meta.url),'utf8'));
   const courseImagesPath=await mkdtemp(path.join(tmpdir(),'portfolio-course-images-'));
   const store=createContentStore(pool,{courseImagesPath});await store.initialize();
+  await t.test('verified projects preserve owner data, use the requested branch and migrate only once',async()=>{
+   const original=await store.read();const data=structuredClone(original.data);
+   const unrelated=structuredClone(data.projects[0]);
+   const targets=verifiedProjectDetails.map((details,index)=>({...structuredClone(data.projects[0]),id:`owner-project-${index}`,title:details.repository.split('/')[1],github:'',repositories:[{name:'Código',url:`https://github.com/${details.repository}`}],image:unrelated.image,contribution:index===3?'Ejemplo de aporte: dashboard ficticio':'Mi aporte confirmado',collaboratorLinks:index===0?[{name:'Colaborador',github:'https://github.com/team'}]:[],collaborators:'',category:'Colaboración',visible:index!==2}));
+   data.projects=[unrelated,...targets];
+   await pool.query('DELETE FROM content_migrations WHERE id=$1',['2026-11-verified-project-details-v1']);
+   await store.save(data,original.revision);await store.initialize();
+   const saved=await store.read();assert.ok(contentSchema.safeParse(saved.data).success);
+   assert.deepEqual(saved.data.projects[0],unrelated);
+   for(const [index,before] of targets.entries()){
+    const after=saved.data.projects[index+1];
+    for(const key of ['id','title','image','visible','collaborators','collaboratorLinks'])assert.deepEqual(after[key],before[key]);
+    if(index!==3)assert.equal(after.contribution,before.contribution);
+    assert.equal(after.example,false);assert.ok(after.description.length>100);assert.ok(after.tech.length>0);
+   }
+   const recicl=saved.data.projects[3];assert.equal(recicl.repositories[0].url,'https://github.com/carol104/ReciclApp/tree/feature/notificaciones');
+   assert.ok(recicl.description.includes('demostraciones locales'));
+   const dino=saved.data.projects[4];assert.equal(dino.category,'Personal');assert.ok(dino.tech.includes('Java'));assert.ok(dino.contribution.startsWith('Desarrollo completo del juego'));
+   saved.data.projects[1].description='Edición posterior de la propietaria';await store.save(saved.data,saved.revision);
+   const edited=await store.read();await store.initialize();const repeated=await store.read();
+   assert.equal(repeated.revision,edited.revision);assert.equal(repeated.data.projects[1].description,'Edición posterior de la propietaria');
+   await pool.query('UPDATE site_content SET data=$1::jsonb,revision=1 WHERE id=1',[JSON.stringify(original.data)]);
+  });
   await t.test('expanded stack is added once and CI/CD is moved last without losing custom content',async()=>{
    const original=await store.read();const data=structuredClone(original.data);
    const added=['TypeScript','Vite','Tailwind CSS','MongoDB','Heroku','Railway'];
@@ -38,7 +63,7 @@ test('admin setup, authentication, uploads, publication and persistence with Pos
    data.technologyGroups=data.technologyGroups.filter(group=>group.icon!=='quality');
    const deploy=data.technologyGroups.find(group=>group.icon==='deploy');deploy.title='Mi despliegue';deploy.items=['Docker','Mi herramienta'];
    await pool.query('DELETE FROM content_migrations WHERE id=$1',['2026-11-quality-jenkins']);await store.save(data,original.revision);await store.initialize();
-   const migrated=await store.read();assert.deepEqual(migrated.data.technologyGroups.find(group=>group.icon==='quality').items,['Selenium','Playwright','pytest','SonarQube','JUnit']);
+   const migrated=await store.read();assert.deepEqual(migrated.data.technologyGroups.find(group=>group.icon==='quality').items,['Selenium','Playwright','Pytest','SonarQube','JUnit','Normas ISO']);
    const deployment=migrated.data.technologyGroups.find(group=>group.icon==='deploy');assert.equal(deployment.title,'Mi despliegue');assert.ok(deployment.items.includes('Mi herramienta'));assert.ok(deployment.items.includes('Jenkins'));
    deployment.items=deployment.items.filter(item=>item!=='Jenkins');await store.save(migrated.data,migrated.revision);await store.initialize();assert.ok(!(await store.read()).data.technologyGroups.find(group=>group.icon==='deploy').items.includes('Jenkins'));
    await pool.query('UPDATE site_content SET data=$1::jsonb,revision=1 WHERE id=1',[JSON.stringify(original.data)]);

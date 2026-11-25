@@ -36,5 +36,5 @@ export const initialContent = {
   technologyGroups: technologyGroups.map((group, index) => ({ ...group, id: `group-${index}`, visible: true })),
   experience: experience.map((item, index) => ({ ...item, id: `experience-${index}`, visible: true })),
   courses: placeholderCourses, interests,
-  appearance: { brand: 'dev.folio', headline: 'Convierto ideas\nen aplicaciones\n', summary: 'Me enfoco en el desarrollo backend: APIs, bases de datos y la lógica que hace funcionar una aplicación.', accent: '#82aff7', background: '#080f21' },
+  appearance: { brand: 'dev.folio', headline: 'Convierto ideas\nen aplicaciones\n', summary: 'Las tecnologías principales que uso para construir aplicaciones son React, Node.js y PostgreSQL, con un enfoque claro y limpio.', accent: '#82aff7', background: '#080f21' },
 };

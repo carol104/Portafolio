@@ -11,6 +11,7 @@ import {createContentStore} from './content-store.js';
 import {contentSchema} from './content-model.js';
 import {verifiedProjectDetails} from './project-details-migration.js';
 import {verifiedTeamProjectDetails} from './team-project-details-migration.js';
+import {completeKarenProjectDetails, migrateKarenProjectDetails} from './karen-project-details-migration.js';
 
 test('admin setup, authentication, uploads, publication and persistence with PostgreSQL',async t=>{
  const connection=new URL(process.env.DATABASE_URL);const control=new pg.Pool({connectionString:connection.href});
@@ -65,6 +66,23 @@ test('admin setup, authentication, uploads, publication and persistence with Pos
    saved.data.projects[1].description='Nueva edición';await store.save(saved.data,saved.revision);
    const edited=await store.read();await store.initialize();const repeated=await store.read();
    assert.equal(repeated.revision,edited.revision);assert.equal(repeated.data.projects[1].description,'Nueva edición');
+   await pool.query('UPDATE site_content SET data=$1::jsonb,revision=1 WHERE id=1',[JSON.stringify(original.data)]);
+  });
+  await t.test('Karen completion changes only its verified fields and preserves future owner edits',async()=>{
+   const original=await store.read();const data=structuredClone(original.data);
+   const target={...structuredClone(data.projects[0]),id:'karen-owner-id',title:'Ecosistema Karen',github:'',repositories:[{name:'Código',url:'https://github.com/kiramman-mp3/sistema-inventario-supermercado/tree/main'}],contribution:'Base React Native y chatbot',collaboratorLinks:[{name:'Johan',github:'https://github.com/kiramman-mp3'}],visible:false,image:'/api/media/45db9c12-8686-48a5-b435-8f441947729f'};
+   data.projects.push(target);
+   await pool.query('DELETE FROM content_migrations WHERE id=$1',['2026-11-verified-karen-project-details-v1']);
+   await store.save(data,original.revision);await store.initialize();
+   const saved=await store.read();assert.ok(contentSchema.safeParse(saved.data).success);
+   assert.deepEqual(saved.data.projects.slice(0,-1),original.data.projects);
+   const karen=saved.data.projects.at(-1);
+   for(const key of ['id','title','category','contribution','collaboratorLinks','image','visible','repositories'])assert.deepEqual(karen[key],target[key]);
+   assert.ok(karen.description.includes('FEFO'));assert.ok(karen.tech.includes('React Native'));assert.equal(karen.example,false);assert.equal(karen.url,'https://karen.madebyjohan.xyz');
+   assert.equal(completeKarenProjectDetails({...target,url:'https://example.com/custom'}).url,'https://example.com/custom');
+   karen.description='Mi edición posterior';await store.save(saved.data,saved.revision);
+   const edited=await store.read();await migrateKarenProjectDetails(pool);const repeated=await store.read();
+   assert.equal(repeated.revision,edited.revision);assert.equal(repeated.data.projects.at(-1).description,'Mi edición posterior');
    await pool.query('UPDATE site_content SET data=$1::jsonb,revision=1 WHERE id=1',[JSON.stringify(original.data)]);
   });
   await t.test('expanded stack is added once and CI/CD is moved last without losing custom content',async()=>{

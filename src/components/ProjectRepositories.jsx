@@ -11,7 +11,7 @@ export default function ProjectRepositories({ project }) {
     </ExternalLink>
   );
   return <div className="project-repositories" role="group" aria-label={`Repositorios de ${project.title}`}>
-    <div className="project-repositories-heading"><Github size={21} aria-hidden="true"/><span className="sr-only">Repositorios de GitHub</span></div>
+    <h4 className="project-repositories-heading"><Github size={21} aria-hidden="true"/><span>Repositorios</span></h4>
     <ul>{repositories.map((repository, index) => <li key={index}>
       <ExternalLink href={repository.url}><Github size={15} aria-hidden="true"/>{repository.name}</ExternalLink>
     </li>)}</ul>

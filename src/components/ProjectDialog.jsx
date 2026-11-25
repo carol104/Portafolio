@@ -30,7 +30,7 @@ export default function ProjectDialog({ project, onClose, triggerRef }) {
         <div className="dialog-scroll">
         <ProjectVisual project={project} large/>
         <div className="dialog-body">
-          <p className="eyebrow">{project.example ? 'CONCEPTO DE EJEMPLO' : 'PROYECTO'} · {categoryLabel(project.category)}</p>
+          <p className="eyebrow">PROYECTO · {categoryLabel(project.category)}</p>
           <h2 id="project-dialog-title">{project.title}</h2>
           <p>{project.description}</p>
           <h3>Mi contribución</h3>

@@ -24,7 +24,6 @@ export default function ProjectCard({ project, onOpen }) {
       <button className="project-cover" type="button" aria-label={`Ver detalles de ${project.title}`} onClick={open}>
         <ProjectVisual project={project}/>
         <span className="cover-arrow"><ArrowUpRight size={22} aria-hidden="true"/></span>
-        {project.example && <span className="example-label">Concepto de ejemplo</span>}
       </button>
       <div className="project-content">
       <div className="project-meta">

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { Lightbulb, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import SectionTitle from './SectionHeading';
 import ProjectCard from './ProjectCard';
 import MagneticButton from './MagneticButton';
@@ -83,11 +83,6 @@ export default function ProjectsSection({ projects, onOpen, preview = false }) {
 
       {!preview && !filtered.length && (
         <p className="example-note">No hay proyectos en esta combinación de filtros. Prueba otra categoría o tecnología.</p>
-      )}
-      {!preview && allProjects.some((p) => p.example) && (
-        <p className="example-note">
-          <Lightbulb size={15} /> Los proyectos identificados como conceptos son ejemplos de presentación.
-        </p>
       )}
 
       {preview && (

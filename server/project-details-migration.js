@@ -47,7 +47,7 @@ export const verifiedProjectDetails = [
   },
 ];
 
-function repositoryIdentity(value) {
+export function repositoryIdentity(value) {
   try {
     const url = new URL(value);
     if (url.hostname.toLowerCase() !== 'github.com') return '';
@@ -84,18 +84,17 @@ export function completeProjectDetails(project) {
   return next;
 }
 
-export async function migrateProjectDetails(pool) {
+export async function migrateProjectDetails(pool, { migration = '2026-11-verified-project-details-v1', transform = completeProjectDetails } = {}) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
     await client.query('SELECT pg_advisory_xact_lock(39187423)');
-    const migration = '2026-11-verified-project-details-v1';
     const applied = await client.query('SELECT id FROM content_migrations WHERE id=$1', [migration]);
     if (!applied.rows.length) {
       const { rows } = await client.query('SELECT data FROM site_content WHERE id=1 FOR UPDATE');
       if (rows.length) {
         const data = rows[0].data;
-        const projects = (data.projects || []).map(completeProjectDetails);
+        const projects = (data.projects || []).map(transform);
         if (JSON.stringify(projects) !== JSON.stringify(data.projects)) {
           data.projects = projects;
           await client.query('UPDATE site_content SET data=$1::jsonb, revision=revision+1, updated_at=NOW() WHERE id=1', [JSON.stringify(data)]);

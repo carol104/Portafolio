@@ -10,6 +10,7 @@ import {createApp} from './app.js';
 import {createContentStore} from './content-store.js';
 import {contentSchema} from './content-model.js';
 import {verifiedProjectDetails} from './project-details-migration.js';
+import {verifiedTeamProjectDetails} from './team-project-details-migration.js';
 
 test('admin setup, authentication, uploads, publication and persistence with PostgreSQL',async t=>{
  const connection=new URL(process.env.DATABASE_URL);const control=new pg.Pool({connectionString:connection.href});
@@ -43,6 +44,27 @@ test('admin setup, authentication, uploads, publication and persistence with Pos
    saved.data.projects[1].description='Edición posterior de la propietaria';await store.save(saved.data,saved.revision);
    const edited=await store.read();await store.initialize();const repeated=await store.read();
    assert.equal(repeated.revision,edited.revision);assert.equal(repeated.data.projects[1].description,'Edición posterior de la propietaria');
+   await pool.query('UPDATE site_content SET data=$1::jsonb,revision=1 WHERE id=1',[JSON.stringify(original.data)]);
+  });
+  await t.test('team project completion preserves credits and previous projects and respects subsequent edits',async()=>{
+   const original=await store.read();const data=structuredClone(original.data);
+   const previous={...structuredClone(data.projects[0]),github:'https://github.com/carol104/PrioTask',description:'Texto personalizado después de la primera actualización'};
+   const targets=verifiedTeamProjectDetails.map((details,index)=>({...structuredClone(data.projects[0]),id:`team-project-${index}`,title:index?'Iron Zone':'Team Corporate',repositories:undefined,github:`https://github.com/${details.repository}.git`,url:index?'https://example.com/my-demo':'',visible:!index,image:'/api/media/45db9c12-8686-48a5-b435-8f441947729f',category:'Colaboración',contribution:index?'Construcción del módulo de clases y eventos':'Gestión de comentarios',collaboratorLinks:[{name:'Mi equipo',github:'https://github.com/team'}]}));
+   data.projects=[previous,...targets];
+   await pool.query('DELETE FROM content_migrations WHERE id=$1',['2026-11-verified-team-project-details-v1']);
+   await store.save(data,original.revision);await store.initialize();
+   const saved=await store.read();assert.ok(contentSchema.safeParse(saved.data).success);
+   assert.equal(saved.data.projects[0].description,previous.description);
+   for(const [index,before] of targets.entries()){
+    const after=saved.data.projects[index+1];
+    for(const key of ['id','title','category','contribution','collaboratorLinks','image','visible','github'])assert.deepEqual(after[key],before[key]);
+    assert.ok(after.description.length>100);assert.ok(after.tech.length);assert.equal(after.example,false);
+   }
+   assert.ok(saved.data.projects[1].tech.includes('Angular'));assert.equal(saved.data.projects[1].url,'https://stratium-web.vercel.app');
+   assert.ok(saved.data.projects[2].tech.includes('Odoo'));assert.equal(saved.data.projects[2].url,targets[1].url);
+   saved.data.projects[1].description='Nueva edición';await store.save(saved.data,saved.revision);
+   const edited=await store.read();await store.initialize();const repeated=await store.read();
+   assert.equal(repeated.revision,edited.revision);assert.equal(repeated.data.projects[1].description,'Nueva edición');
    await pool.query('UPDATE site_content SET data=$1::jsonb,revision=1 WHERE id=1',[JSON.stringify(original.data)]);
   });
   await t.test('expanded stack is added once and CI/CD is moved last without losing custom content',async()=>{

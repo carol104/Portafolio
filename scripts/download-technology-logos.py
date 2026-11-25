@@ -5,6 +5,8 @@ from urllib.request import urlopen
 import sys
 
 icons={
+ 'expo':'expo/expo-original.svg','prisma':'prisma/prisma-original.svg',
+ 'xml':'xml/xml-original.svg','css':'css3/css3-original.svg',
  'mongodb':'mongodb/mongodb-original.svg','vite':'vitejs/vitejs-original.svg',
  'typescript':'typescript/typescript-original.svg','tailwind':'tailwindcss/tailwindcss-original.svg',
  'heroku':'heroku/heroku-original.svg','railway':'railway/railway-original.svg',

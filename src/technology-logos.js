@@ -1,4 +1,5 @@
 const logos = {
+    expo: 'expo', prisma: 'prisma', xml: 'xml', css: 'css', css3: 'css',
     mongodb: 'mongodb', mongo: 'mongodb', vite: 'vite', vitejs: 'vite', typescript: 'typescript', ts: 'typescript', tailwind: 'tailwind', tailwindcss: 'tailwind', heroku: 'heroku', railway: 'railway',
     jenkins: 'jenkins', selenium: 'selenium', playwright: 'playwright', pytest: 'pytest', sonarqube: 'sonarqube', junit: 'junit', junit5: 'junit',
     python: 'python', javascript: 'javascript', js: 'javascript', java: 'java',

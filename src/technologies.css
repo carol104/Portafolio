@@ -15,6 +15,7 @@
 .technology-logo img{display:block;width:29px;height:29px;object-fit:contain;filter:drop-shadow(0 2px 5px #0003)}
 .technology-card li:hover .technology-logo{transform:scale(1.09) rotate(-4deg)}
 .technology-logo.logo-express img{filter:brightness(0) invert(.92)}
+.technology-logo.logo-expo img,.technology-logo.logo-prisma img{filter:brightness(0) invert(.92)}
 .technology-name{min-width:0;overflow-wrap:anywhere;font-weight:500;letter-spacing:.1px}
 .technology-monogram{font:700 21px 'Segoe UI',sans-serif;color:#fff;line-height:1;letter-spacing:0;text-shadow:0 1px 3px #0002}
 .technology-logo.logo-github img{filter:brightness(0) invert(.92)}

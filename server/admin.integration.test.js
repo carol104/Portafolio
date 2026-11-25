@@ -3,7 +3,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import pg from 'pg';
-import {readFile,mkdtemp} from 'node:fs/promises';
+import {readFile,mkdtemp,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {createApp} from './app.js';
@@ -12,6 +12,8 @@ import {contentSchema} from './content-model.js';
 import {verifiedProjectDetails} from './project-details-migration.js';
 import {verifiedTeamProjectDetails} from './team-project-details-migration.js';
 import {completeKarenProjectDetails, migrateKarenProjectDetails} from './karen-project-details-migration.js';
+import {migrateProjectImages} from './project-images-migration.js';
+import {canonicalTechnology, normalizeTechnology} from '../src/technology-catalog.js';
 
 test('admin setup, authentication, uploads, publication and persistence with PostgreSQL',async t=>{
  const connection=new URL(process.env.DATABASE_URL);const control=new pg.Pool({connectionString:connection.href});
@@ -23,7 +25,50 @@ test('admin setup, authentication, uploads, publication and persistence with Pos
   connection.pathname='/'+database;pool=new pg.Pool({connectionString:connection.href});
   await pool.query(await readFile(new URL('./schema.sql',import.meta.url),'utf8'));
   const courseImagesPath=await mkdtemp(path.join(tmpdir(),'portfolio-course-images-'));
-  const store=createContentStore(pool,{courseImagesPath});await store.initialize();
+  const projectImagesPath=await mkdtemp(path.join(tmpdir(),'portfolio-project-images-'));
+  const store=createContentStore(pool,{courseImagesPath,projectImagesPath});await store.initialize();
+  await t.test('Expo Prisma XML and CSS are added once without duplicate aliases or lost owner edits',async()=>{
+   const original=await store.read();const data=structuredClone(original.data);
+   const additions=['Expo','Prisma','XML','CSS'];
+   for(const group of data.technologyGroups)group.items=group.items.filter(item=>!additions.includes(item));
+   const frontend=data.technologyGroups.find(group=>group.id==='group-1');frontend.items.push('CSS3','Svelte');frontend.title='Mi frontend';frontend.visible=false;
+   await pool.query('DELETE FROM content_migrations WHERE id=$1',['2026-11-expo-prisma-xml-css']);
+   await store.save(data,original.revision);await store.initialize();
+   const saved=await store.read();assert.ok(contentSchema.safeParse(saved.data).success);
+   const items=saved.data.technologyGroups.flatMap(group=>group.items).map(item=>normalizeTechnology(canonicalTechnology(item)));
+   for(const name of additions)assert.equal(items.filter(item=>item===normalizeTechnology(name)).length,1);
+   const updated=saved.data.technologyGroups.find(group=>group.id==='group-1');assert.equal(updated.title,'Mi frontend');assert.equal(updated.visible,false);assert.ok(updated.items.includes('Svelte'));assert.ok(updated.items.includes('Expo'));
+   assert.ok(saved.data.technologyGroups.find(group=>group.id==='group-0').items.includes('XML'));
+   assert.ok(saved.data.technologyGroups.find(group=>group.id==='group-2').items.includes('Prisma'));
+   assert.deepEqual(saved.data.projects,original.data.projects);
+   updated.items=updated.items.filter(item=>item!=='Expo');await store.save(saved.data,saved.revision);
+   const edited=await store.read();await store.initialize();const repeated=await store.read();
+   assert.equal(repeated.revision,edited.revision);assert.ok(!repeated.data.technologyGroups.find(group=>group.id==='group-1').items.includes('Expo'));
+   await pool.query('UPDATE site_content SET data=$1::jsonb,revision=1 WHERE id=1',[JSON.stringify(original.data)]);
+  });
+  await t.test('existing project images are exported without losing bytes, credits or external links',async()=>{
+   const original=await store.read();const data=structuredClone(original.data);
+   const bytes=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a73cAAAAASUVORK5CYII=','base64');
+   const id='00000000-0000-4000-8000-000000000001';
+   await pool.query('INSERT INTO portfolio_media(id,mime,filename,data) VALUES($1,$2,$3,$4)',[id,'image/png','original.png',bytes]);
+   data.projects[0].image=`/api/media/${id}`;
+   data.projects[1].image='https://example.com/project.webp';
+   data.projects[2].repositories=[{name:'Código',url:'https://github.com/carol104/ReciclApp/tree/feature/notificaciones'}];
+   data.projects[2].image='';
+   await writeFile(path.join(projectImagesPath,'reciclapp.png'),bytes);
+   const expected=structuredClone(data);
+   await pool.query('DELETE FROM content_migrations WHERE id=$1',['2026-11-project-images-directory']);
+   await store.save(data,original.revision);await migrateProjectImages(pool,{directory:projectImagesPath});
+   const saved=await store.read();assert.ok(contentSchema.safeParse(saved.data).success);
+   assert.match(saved.data.projects[0].image,/^\/assets\/imagenes_proyectos\/[a-zA-Z0-9_-]+\.png$/);
+   assert.deepEqual(await readFile(path.join(projectImagesPath,path.basename(saved.data.projects[0].image))),bytes);
+   assert.equal(saved.data.projects[2].image,'/assets/imagenes_proyectos/reciclapp.png');
+   expected.projects[0].image=saved.data.projects[0].image;expected.projects[2].image=saved.data.projects[2].image;
+   assert.deepEqual(saved.data,expected);
+   assert.deepEqual((await pool.query('SELECT data FROM portfolio_media WHERE id=$1',[id])).rows[0].data,bytes);
+   await migrateProjectImages(pool,{directory:projectImagesPath});assert.equal((await store.read()).revision,saved.revision);
+   await pool.query('UPDATE site_content SET data=$1::jsonb,revision=1 WHERE id=1',[JSON.stringify(original.data)]);
+  });
   await t.test('verified projects preserve owner data, use the requested branch and migrate only once',async()=>{
    const original=await store.read();const data=structuredClone(original.data);
    const unrelated=structuredClone(data.projects[0]);
@@ -126,7 +171,7 @@ test('admin setup, authentication, uploads, publication and persistence with Pos
    await pool.query('UPDATE site_content SET data=$1::jsonb,revision=1 WHERE id=1',[JSON.stringify(original.data)]);
   });
   const setupToken='private-isolated-test-setup-code-123456789';
-  server=createApp({pool,contentStore:store,setupToken,production:true,courseImagesPath}).listen(0,'127.0.0.1');await new Promise(resolve=>server.once('listening',resolve));
+  server=createApp({pool,contentStore:store,setupToken,production:true,courseImagesPath,projectImagesPath}).listen(0,'127.0.0.1');await new Promise(resolve=>server.once('listening',resolve));
   const base=`http://127.0.0.1:${server.address().port}`;
   const request=async(path,{method='GET',data,cookie,csrf,origin=base}={})=>{const response=await fetch(base+path,{method,headers:{Origin:origin,...(data?{'Content-Type':'application/json'}:{}),...(cookie?{Cookie:cookie}:{}),...(csrf?{'X-CSRF-Token':csrf}:{})},...(data?{body:JSON.stringify(data)}:{})});const json=response.headers.get('content-type')?.includes('application/json')?await response.json():null;return {response,json}};
   const credentials={email:'admin@example.invalid',password:'Isolated admin test password!2026',setupToken};
@@ -160,6 +205,18 @@ test('admin setup, authentication, uploads, publication and persistence with Pos
    assert.equal((await fetch(base+'/assets/imagenes_cursos/missing.png')).status,404);
    const pdf={...payload,mime:'application/pdf',data:Buffer.from('%PDF-1.4').toString('base64')};
    assert.equal((await request('/api/admin/media',{method:'POST',cookie,csrf,data:pdf})).response.status,400);
+  });
+  await t.test('project uploads persist to the project directory and remain usable after publication',async()=>{
+   const payload={category:'project-image',filename:'../../captura proyecto.png',mime:'image/png',data:'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a73cAAAAASUVORK5CYII='};
+   const upload=await request('/api/admin/media',{method:'POST',cookie,csrf,data:payload});
+   assert.equal(upload.response.status,201);assert.match(upload.json.url,/^\/assets\/imagenes_proyectos\/captura-proyecto-[a-f0-9-]+\.png$/);
+   const bytes=await readFile(path.join(projectImagesPath,path.basename(upload.json.url)));assert.equal(bytes.toString('base64'),payload.data);
+   const image=await fetch(base+upload.json.url);assert.equal(image.status,200);assert.equal(image.headers.get('content-type'),'image/png');assert.deepEqual(Buffer.from(await image.arrayBuffer()),bytes);
+   const current=(await request('/api/admin/content',{cookie})).json;current.data.projects[1].image=upload.json.url;
+   assert.equal((await request('/api/admin/content',{method:'PUT',cookie,csrf,data:current})).response.status,200);
+   assert.equal((await request('/api/content')).json.data.projects[0].image,upload.json.url);
+   assert.equal((await fetch(base+'/assets/imagenes_proyectos/missing.png')).status,404);
+   assert.equal((await request('/api/admin/media',{method:'POST',cookie,csrf,data:{...payload,mime:'application/pdf',data:Buffer.from('%PDF-1.4').toString('base64')}})).response.status,400);
   });
   await t.test('private messages are unavailable without an admin session',async()=>{assert.equal((await request('/api/admin/messages')).response.status,401);await pool.query("INSERT INTO contact_messages(name,email,subject,message,consent_at) VALUES('Prueba','test@example.invalid','Proyecto','Mensaje privado de prueba',NOW())");assert.equal((await request('/api/admin/messages',{cookie})).json.messages.length,1)});
   await t.test('logout revokes the server-side session',async()=>{assert.equal((await request('/api/admin/logout',{method:'POST',cookie,csrf})).response.status,200);assert.equal((await request('/api/admin/content',{cookie})).response.status,401)});

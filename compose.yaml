@@ -9,8 +9,10 @@ services:
       TRUST_PROXY: ${TRUST_PROXY:-0}
       ADMIN_SETUP_TOKEN: ${ADMIN_SETUP_TOKEN:-}
       COURSE_IMAGES_DIR: /app/course-images
+      PROJECT_IMAGES_DIR: /app/project-images
     volumes:
       - ./public/assets/imagenes_cursos:/app/course-images
+      - ./public/assets/imagenes_proyectos:/app/project-images
     depends_on:
       db:
         condition: service_healthy

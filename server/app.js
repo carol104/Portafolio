@@ -18,14 +18,14 @@ const contactSchema = z.object({
  consent:z.literal('on'),
  website:z.string().max(300).optional().default(''),
 });
-export function createApp({pool,production=false,trustProxy=0,logger=console,contentStore=createContentStore(pool),setupToken=process.env.ADMIN_SETUP_TOKEN||'',courseImagesPath}={}) {
+export function createApp({pool,production=false,trustProxy=0,logger=console,contentStore=createContentStore(pool),setupToken=process.env.ADMIN_SETUP_TOKEN||'',courseImagesPath,projectImagesPath}={}) {
  const app=express();
  app.disable('x-powered-by');
  app.set('trust proxy',trustProxy);
  app.use(helmet({contentSecurityPolicy:production?{directives:{defaultSrc:["'self'"],scriptSrc:["'self'"],styleSrc:["'self'"],imgSrc:["'self'","data:","https:"],fontSrc:["'self'"],connectSrc:["'self'"],objectSrc:["'none'"],upgradeInsecureRequests:null}}:false,strictTransportSecurity:production?undefined:false}));
  const adminJson=express.json({limit:'1mb'}),publicJson=express.json({limit:'16kb'});
  app.use((req,res,next)=>req.path==='/api/admin/media'?next():(req.path.startsWith('/api/admin/')?adminJson:publicJson)(req,res,next));
- mountAdmin(app,{pool,store:contentStore,setupToken,courseImagesPath});
+ mountAdmin(app,{pool,store:contentStore,setupToken,courseImagesPath,projectImagesPath});
  app.get('/api/health',async(_req,res)=>{try{await pool.query('SELECT 1');res.json({status:'ok',database:'connected'})}catch{res.status(503).json({status:'unavailable',database:'disconnected'})}});
  app.post('/api/contact',rateLimit({windowMs:15*60*1000,limit:5,standardHeaders:'draft-8',legacyHeaders:false,message:{error:'Has enviado varios mensajes. Inténtalo de nuevo en 15 minutos.'}}),async(req,res)=>{
   const parsed=contactSchema.safeParse(req.body);

@@ -193,6 +193,8 @@ test('technology logos and Data & Business Intelligence box are configured with 
 
 test('technology branding uses local logos or one colored initial, with purple Scrum',async()=>{
  const branding=await import('../technology-logos.js');
+ for(const name of ['Expo','Prisma','XML','CSS'])assert.equal(branding.technologyLogoName(name),name.toLowerCase());
+ assert.equal(branding.technologyLogoName('CSS3'),'css');
  const {technologyGroups}=await import('../technology-catalog.js');
  const {access}=await import('node:fs/promises');
  const {default:Logo}=await component('../TechnologyLogo.jsx',{'./technology-logos.js':branding});

@@ -42,7 +42,7 @@ export const verifiedProjectDetails = [
     repository: 'DavidJosueP2/Banking-Credit-Investment-Simulator',
     subtitle: 'Compara créditos e inversiones con simulaciones detalladas.',
     type: 'Aplicación web',
-    tech: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Java', 'Spring Boot', 'Spring Security', 'Spring Data JPA', 'PostgreSQL', 'Flyway', 'Gradle', 'Docker'],
+    tech: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Java', 'Spring Boot', 'Spring Security', 'Spring Data JPA', 'PostgreSQL', 'Flyway', 'Gradle', 'Docker', 'Vercel'],
     description: 'Sistema web para simular créditos e inversiones a partir de productos, tasas, plazos, seguros y cargos configurables. El módulo de créditos genera tablas de amortización con los sistemas francés y alemán, permite evaluar la capacidad de pago y exportar resultados a PDF y Excel. Incluye simulación de inversiones y gestión de solicitudes en línea, además de paneles administrativos con roles y permisos para clientes, asesores y analistas. Combina una interfaz React con una API Java y Spring Boot y persistencia en PostgreSQL.',
   },
 ];

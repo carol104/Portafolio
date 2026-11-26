@@ -1,5 +1,7 @@
 # Dev.folio
 
+Para migrar los datos publicados y desplegar en Vercel con PostgreSQL externo, sigue [DEPLOY-VERCEL.md](./DEPLOY-VERCEL.md). Incluye la exportación de contenido, archivos e imágenes actuales y la importación en una base vacía de Neon.
+
 La interfaz usa una escala compartida en `src/interface.css`: texto principal de 1 rem, etiquetas de .875 rem y controles de al menos 44 px. Las miniaturas de aplicaciones conservan su escala ilustrativa. Los componentes de `src/components/` comparten encabezados, enlaces externos, redes profesionales, etiquetas de tecnologías, tarjetas, detalles de proyectos y el formulario de contacto. GitHub, LinkedIn, repositorios y certificados se abren en otra pestaña con `noopener noreferrer` y un aviso para lectores de pantalla.
 
 ## Administrar sin tocar código

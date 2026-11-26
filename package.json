@@ -1,1 +1,37 @@
-{"name":"blueprint-portfolio","version":"1.0.0","private":true,"type":"module","scripts":{"dev":"concurrently -k \"node --env-file-if-exists=.env --watch server/index.js\" \"vite --host 127.0.0.1\"","build":"vite build","start":"node --env-file-if-exists=.env server/index.js","test":"node --test server/app.test.js server/admin.test.js src/components/components.test.js"},"dependencies":{"express":"^5.1.0","express-rate-limit":"^8.1.0","framer-motion":"^14.14.0","helmet":"^8.1.0","lucide-react":"^0.468.0","pdfkit":"^0.17.2","pg":"^8.16.3","react":"^19.2.0","react-dom":"^19.2.0","zod":"^4.1.12"},"devDependencies":{"@vitejs/plugin-react":"^5.1.0","concurrently":"^9.2.1","vite":"^7.2.2"},"engines":{"node":">=22"}}
+{
+  "name": "blueprint-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k \"node --env-file-if-exists=.env --watch server/index.js\" \"vite --host 127.0.0.1\"",
+    "build": "vite build",
+    "start": "node --env-file-if-exists=.env server/index.js",
+    "test": "node --test server/app.test.js server/admin.test.js src/components/components.test.js",
+    "build:vercel": "node scripts/build-vercel.mjs",
+    "db:export": "node --env-file-if-exists=.env scripts/export-data.mjs",
+    "db:import": "node --env-file-if-exists=.env.migration scripts/import-data.mjs",
+    "db:migrate": "node --env-file-if-exists=.env.migration scripts/migrate-db.mjs",
+    "test:migration": "node --test server/data-transfer.integration.test.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "framer-motion": "^14.14.0",
+    "helmet": "^8.1.0",
+    "lucide-react": "^0.468.0",
+    "pdfkit": "^0.17.2",
+    "pg": "^8.16.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.0",
+    "concurrently": "^9.2.1",
+    "vite": "^7.2.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

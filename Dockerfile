@@ -14,6 +14,7 @@ COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=build /app/dist ./dist
 COPY server ./server
+COPY scripts ./scripts
 COPY src/content.js src/portfolio.js src/technology-catalog.js ./src/
 USER node
 EXPOSE 3001

@@ -1,0 +1,13 @@
+.git
+.vercel
+.env
+.env.*
+backups
+tmp
+artifacts
+output
+coverage
+ADMIN-ACCESO.local.txt
+*.log
+*.dump
+server/*.test.js

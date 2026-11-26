@@ -4,7 +4,7 @@ export const technologyGroups = [
   { title: 'Backend', description: 'Lógica, servicios y aplicaciones web.', icon: 'backend', items: ['Spring Boot', 'Laravel', 'ASP.NET', 'Express.js', 'Node.js', 'Prisma', 'Java Servlet', 'Tomcat', 'Odoo'] },
   { title: 'Bases de datos', description: 'Almacenamiento y consulta de información.', icon: 'database', items: ['MySQL', 'SQL Server', 'Oracle Database', 'PostgreSQL', 'MongoDB'] },
   { title: 'Calidad y pruebas', description: 'Automatización, estándares y calidad del software.', icon: 'quality', items: ['Selenium', 'Playwright', 'Pytest', 'SonarQube', 'JUnit', 'Normas ISO'] },
-  { title: 'CI/CD y despliegue', description: 'Integración continua y publicación de aplicaciones.', icon: 'deploy', items: ['Docker', 'Jenkins', 'Heroku', 'Railway'] },
+  { title: 'CI/CD y despliegue', description: 'Integración continua y publicación de aplicaciones.', icon: 'deploy', items: ['Docker', 'Jenkins', 'Railway'] },
   { title: 'Arquitectura y desarrollo', description: 'Diseño de soluciones y servicios conectados.', icon: 'backend', items: ['Arquitectura orientada a servicios (SOA)', 'Desarrollo de API', 'Microservicios', 'Desarrollo de Software'] },
   { title: 'Datos y análisis', description: 'Análisis, visualización y fundamentos de ciencia de datos.', icon: 'database', items: ['Análisis de datos', 'Data Science Essentials With Python', 'Power BI', 'Grafana'] },
   { title: 'Administración e integración de datos', description: 'Herramientas para administrar e integrar bases de datos.', icon: 'database', items: ['SQL Server Management Studio', 'SQL Server Integration Services (SSIS)', 'PhpMyAdmin'] },

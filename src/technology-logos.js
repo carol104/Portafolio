@@ -1,4 +1,12 @@
 const logos = {
+    'desarrollodeapi': 'api', microservicios: 'microservices', desarrollodesoftware: 'software',
+    'análisisdedatos': 'analytics', cienciadedatos: 'data-science',
+    sqlservermanagementstudio: 'sqlserver', 'sqlserverintegrationservices(ssis)': 'ssis',
+    scrum: 'scrum', 'seguridadderedes': 'network-security', cyberseguridad: 'cybersecurity',
+    notion: 'notion', n8n: 'n8n', cloudflare: 'cloudflare', firebase: 'firebase',
+    javaservlet: 'java', normasiso: 'iso',
+    'arquitecturaorientadaaservicios(soa)': 'soa',
+
     expo: 'expo', prisma: 'prisma', xml: 'xml', css: 'css', css3: 'css',
     mongodb: 'mongodb', mongo: 'mongodb', vite: 'vite', vitejs: 'vite', typescript: 'typescript', ts: 'typescript', tailwind: 'tailwind', tailwindcss: 'tailwind', heroku: 'heroku', railway: 'railway',
     jenkins: 'jenkins', selenium: 'selenium', playwright: 'playwright', pytest: 'pytest', sonarqube: 'sonarqube', junit: 'junit', junit5: 'junit',

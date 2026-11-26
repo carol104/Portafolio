@@ -20,10 +20,12 @@ test('project cards and dialogs expose repository and collaborator links safely'
  const external=await component('ExternalLink.jsx');
  const repositories=await component('ProjectRepositories.jsx',{'./ExternalLink':external,'../portfolio':await import('../portfolio.js')});
  const collaborators=await component('ProjectCollaborators.jsx',{'./ExternalLink':external});
+ const commits=await component('ProjectCommitDate.jsx',{'./ExternalLink':external,'../portfolio':await import('../portfolio.js')});
  const empty={__esModule:true,default:()=>null};
  const dependencies={
   './ExternalLink':external,
   './ProjectRepositories':repositories,
+  './ProjectCommitDate':commits,
   './ProjectCollaborators':collaborators,
   './ProjectVisual':empty,
   './TechnologyTags':empty,
@@ -61,6 +63,21 @@ test('project cards and dialogs expose repository and collaborator links safely'
   if(count===0)assert.equal(html,'');
   else {assert.ok(html.includes('class="project-github"'));assert.ok(!html.includes('Frontend'));}
  }
+});
+
+test('project commit dates link to the newest repository and use Ecuador calendar dates',async()=>{
+ const portfolio=await import('../portfolio.js');
+ const external=await component('ExternalLink.jsx');
+ const {default:CommitDate}=await component('ProjectCommitDate.jsx',{'./ExternalLink':external,'../portfolio':portfolio});
+ const project={repositories:[{name:'Backend',url:'https://github.com/team/backend',lastCommitAt:'2026-11-20T12:00:00Z',lastCommitUrl:'https://github.com/team/backend/commit/old'},{name:'Móvil',url:'https://github.com/team/mobile',lastCommitAt:'2026-11-22T00:38:26Z',lastCommitUrl:'https://github.com/team/mobile/commit/new'}]};
+ assert.equal(portfolio.projectLastCommit(project).name,'Móvil');
+ const html=renderToStaticMarkup(React.createElement(CommitDate,{project}));
+ assert.ok(html.includes('Último commit:'));assert.match(html,/21 nov/);assert.match(html,/dateTime="2026-11-22T00:38:26Z"/i);
+ assert.ok(html.includes(project.repositories[1].lastCommitUrl));assert.match(html,/rel="noopener noreferrer"/);
+ for(const repositories of [[],[{url:'https://github.com/team/unknown'}],[{lastCommitAt:'invalid'}]])assert.equal(renderToStaticMarkup(React.createElement(CommitDate,{project:{repositories}})),'');
+ const {default:Repositories}=await component('ProjectRepositories.jsx',{'./ExternalLink':external,'../portfolio':portfolio});
+ const details=renderToStaticMarkup(React.createElement(Repositories,{project,showCommitDates:true}));
+ for(const repository of project.repositories)assert.ok(details.includes(repository.lastCommitAt));
 });
 
 test('page navigation points to dedicated routes and Home alone has section navigation',async()=>{

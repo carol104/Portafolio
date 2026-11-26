@@ -10,7 +10,7 @@ export const technologyGroups = [
   { title: 'Administración e integración de datos', description: 'Herramientas para administrar e integrar bases de datos.', icon: 'database', items: ['SQL Server Management Studio', 'SQL Server Integration Services (SSIS)', 'PhpMyAdmin'] },
   { title: 'Herramientas de desarrollo', description: 'Entornos, control de versiones y creación de prototipos.', icon: 'code', items: ['Eclipse', 'Git', 'GitHub', 'Vercel V0', 'n8n'] },
   { title: 'Gestión y colaboración', description: 'Organización del trabajo y seguimiento de proyectos.', icon: 'quality', items: ['Scrum', 'Trello', 'JIRA', 'Notion'] },
-  { title: 'Sistemas y seguridad', description: 'Sistemas operativos, soporte y seguridad de redes.', icon: 'deploy', items: ['Linux', 'Seguridad de redes', 'Cyberseguridad'] },
+  { title: 'Sistemas y seguridad', description: 'Sistemas operativos, soporte y seguridad de redes.', icon: 'deploy', items: ['Linux', 'Seguridad de redes', 'Ciberseguridad'] },
 ];
 
 export const normalizeTechnology = name => name.toLowerCase().replace(/[\s._-]/g, '');

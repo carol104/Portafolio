@@ -1,6 +1,6 @@
 import {useEffect,useState} from 'react';
 import {Code2,User,Layers,GraduationCap,Braces,Briefcase,Heart,Palette,Mail,LogOut,Plus,Trash2,ChevronUp,ChevronDown,Save,ExternalLink,ShieldCheck,ArrowLeft,Upload,Check,KeyRound,Menu,X} from 'lucide-react';
-import {COURSE_KINDS, COURSE_MODALITIES, COURSE_STATUSES, PROJECT_CATEGORIES, PROJECT_FILTERS, categoryLabel, projectRepositories} from './portfolio.js';
+import {COURSE_KINDS, COURSE_MODALITIES, COURSE_STATUSES, PROJECT_CATEGORIES, PROJECT_FILTERS, categoryLabel, projectRepositories, formatCommitDate} from './portfolio.js';
 import './admin.css';
 
 async function api(path,{method='GET',data,csrf}={}){
@@ -13,7 +13,7 @@ function Toggle({label,value,onChange}){return <label className="admin-toggle"><
 function Select({label,value,onChange,options}){return <label className="admin-field"><span>{label}</span><select value={value} onChange={e=>onChange(e.target.value)}>{options.map(option=><option key={typeof option==='string'?option:option[0]} value={typeof option==='string'?option:option[0]}>{typeof option==='string'?option:option[1]}</option>)}</select></label>}
 function Tokens({label,value,onChange}){const [raw,setRaw]=useState(value.join(', '));return <Field label={label} value={raw} onChange={text=>{setRaw(text);onChange([...new Set(text.split(',').map(t=>t.trim()).filter(Boolean))])}} help="Separa cada elemento con una coma."/>}
 function RepositoriesEditor({value,onChange}) {
- const update=(index,key,next)=>onChange(value.map((repository,i)=>i===index?{...repository,[key]:next}:repository));
+ const update=(index,key,next)=>onChange(value.map((repository,i)=>i===index?{...repository,[key]:next,...(key==='url'?{lastCommitAt:'',lastCommitUrl:''}:{})}:repository));
  return <fieldset className="admin-collaborators"><legend>Repositorios de GitHub</legend>
   <p className="admin-repository-help">Con un repositorio se muestra solo el ícono. Con varios, se muestran los nombres que elijas.</p>
   {value.map((repository,index)=><div className="admin-collaborator" key={index}>
@@ -21,6 +21,7 @@ function RepositoriesEditor({value,onChange}) {
     <Field label="Nombre del repositorio" placeholder="Frontend, Backend, App..." value={repository.name} onChange={v=>update(index,'name',v)} required={value.length>1} maxLength={150}/>
     <Field label="Enlace de GitHub" type="url" placeholder="https://github.com/usuario/repositorio" value={repository.url} onChange={v=>update(index,'url',v)} required maxLength={2048}/>
    </div>
+   {formatCommitDate(repository.lastCommitAt)&&<small>Último commit: <time dateTime={repository.lastCommitAt}>{formatCommitDate(repository.lastCommitAt)}</time></small>}
    <button className="admin-collaborator-remove" type="button" aria-label={`Quitar repositorio ${index+1}`} onClick={()=>onChange(value.filter((_,i)=>i!==index))}><Trash2 size={14}/> Quitar</button>
   </div>)}
   <button className="admin-add-collaborator" type="button" onClick={()=>onChange([...value,{name:'',url:''}])}><Plus size={16}/> Añadir repositorio</button>

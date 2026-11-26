@@ -2,7 +2,7 @@ const logos = {
     'desarrollodeapi': 'api', microservicios: 'microservices', desarrollodesoftware: 'software',
     'análisisdedatos': 'analytics', cienciadedatos: 'data-science',
     sqlservermanagementstudio: 'sqlserver', 'sqlserverintegrationservices(ssis)': 'ssis',
-    scrum: 'scrum', 'seguridadderedes': 'network-security', cyberseguridad: 'cybersecurity',
+    scrum: 'scrum', 'seguridadderedes': 'network-security', ciberseguridad: 'cybersecurity', cyberseguridad: 'cybersecurity',
     notion: 'notion', n8n: 'n8n', cloudflare: 'cloudflare', firebase: 'firebase',
     javaservlet: 'java', normasiso: 'iso',
     'arquitecturaorientadaaservicios(soa)': 'soa',

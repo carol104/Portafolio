@@ -14,6 +14,8 @@ import {verifiedTeamProjectDetails} from './team-project-details-migration.js';
 import {completeKarenProjectDetails, migrateKarenProjectDetails} from './karen-project-details-migration.js';
 import {migrateProjectImages} from './project-images-migration.js';
 import {canonicalTechnology, normalizeTechnology} from '../src/technology-catalog.js';
+import commitDates from './project-commit-dates.json' with {type:'json'};
+import {migrateProjectCommitDates} from './project-commit-dates-migration.js';
 
 test('admin setup, authentication, uploads, publication and persistence with PostgreSQL',async t=>{
  const connection=new URL(process.env.DATABASE_URL);const control=new pg.Pool({connectionString:connection.href});
@@ -27,6 +29,27 @@ test('admin setup, authentication, uploads, publication and persistence with Pos
   const courseImagesPath=await mkdtemp(path.join(tmpdir(),'portfolio-course-images-'));
   const projectImagesPath=await mkdtemp(path.join(tmpdir(),'portfolio-project-images-'));
   const store=createContentStore(pool,{courseImagesPath,projectImagesPath});await store.initialize();
+  await t.test('all ten project commit dates survive publication and later edits without touching other data',async()=>{
+   const original=await store.read();const data=structuredClone(original.data);
+   const grouped=[commitDates.slice(0,3),...commitDates.slice(3).map(item=>[item])];
+   assert.equal(grouped.length,10);
+   data.projects=[...data.projects,...grouped.map((items,index)=>({...structuredClone(data.projects[0]),id:`commit-project-${index}`,github:'',repositories:items.map(item=>({name:item.repository,url:`https://github.com/${item.repository}${item.branch?'/tree/'+item.branch:''}`}))}))];
+   const before=structuredClone(data);
+   await pool.query('DELETE FROM content_migrations WHERE id=$1',['2026-11-25-project-last-commits']);await store.save(data,original.revision);await store.initialize();
+   const saved=await store.read();const parsed=contentSchema.parse(saved.data);
+   for(const [index,items] of grouped.entries())for(const [repoIndex,item] of items.entries()){
+    const repository=saved.data.projects[original.data.projects.length+index].repositories[repoIndex];
+    assert.equal(repository.lastCommitAt,item.lastCommitAt);assert.equal(repository.lastCommitUrl,item.lastCommitUrl);
+    assert.equal(parsed.projects[original.data.projects.length+index].repositories[repoIndex].lastCommitAt,item.lastCommitAt);
+   }
+   const normalized=structuredClone(saved.data);
+   normalized.projects.forEach(project=>project.repositories?.forEach(repository=>{delete repository.lastCommitAt;delete repository.lastCommitUrl}));
+   assert.deepEqual(normalized,before);
+   saved.data.projects.at(-1).repositories[0].lastCommitAt='2026-11-25T12:00:00Z';await store.save(saved.data,saved.revision);
+   const edited=await store.read();await migrateProjectCommitDates(pool);assert.equal((await store.read()).revision,edited.revision);
+   assert.equal((await store.read()).data.projects.at(-1).repositories[0].lastCommitAt,'2026-11-25T12:00:00Z');
+   await pool.query('UPDATE site_content SET data=$1::jsonb,revision=1 WHERE id=1',[JSON.stringify(original.data)]);
+  });
   await t.test('Expo Prisma XML and CSS are added once without duplicate aliases or lost owner edits',async()=>{
    const original=await store.read();const data=structuredClone(original.data);
    const additions=['Expo','Prisma','XML','CSS'];

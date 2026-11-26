@@ -514,6 +514,19 @@ body {
   margin-top: 24px;
 }
 
+.project-content > .project-updated, .dialog-body > .project-updated {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 8px 0 16px;
+  color: var(--muted);
+  font-size: var(--font-small);
+}
+.project-updated > svg { flex-shrink: 0; }
+.project-updated a { color: #b7cdeb; text-decoration: underline; text-underline-offset: 3px; }
+.project-repositories .repository-commit { display: block; margin: 4px 0 8px; color: var(--muted); }
+.project-repositories .repository-commit a { display: inline; padding: 0; border: 0; background: none; font-size: inherit; }
+
 .project-grid {
   row-gap: 48px;
 }

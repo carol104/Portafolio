@@ -1,0 +1,86 @@
+[
+  {
+    "repository": "carol104/UTAPost-Backend",
+    "branch": "",
+    "lastCommitAt": "2026-03-28T12:17:30Z",
+    "lastCommitUrl": "https://github.com/carol104/UTAPost-Backend/commit/24b0525a4c0c9c4dce3252a88a74120ff660e719",
+    "sha": "24b0525a4c0c9c4dce3252a88a74120ff660e719"
+  },
+  {
+    "repository": "carol104/UTAPost-Frontend",
+    "branch": "",
+    "lastCommitAt": "2026-03-28T23:16:41Z",
+    "lastCommitUrl": "https://github.com/carol104/UTAPost-Frontend/commit/b822b859af5a9594726272caa82bc2ae1ed6880c",
+    "sha": "b822b859af5a9594726272caa82bc2ae1ed6880c"
+  },
+  {
+    "repository": "carol104/UTAPost-Movil",
+    "branch": "",
+    "lastCommitAt": "2025-10-28T12:32:43Z",
+    "lastCommitUrl": "https://github.com/carol104/UTAPost-Movil/commit/22907521c94dd8491b98a76fe95cf288522754f9",
+    "sha": "22907521c94dd8491b98a76fe95cf288522754f9"
+  },
+  {
+    "repository": "carol104/PrioTask",
+    "branch": "",
+    "lastCommitAt": "2026-11-21T17:30:08Z",
+    "lastCommitUrl": "https://github.com/carol104/PrioTask/commit/d3429ea3d877bca4f0fc21c02f3cb6d63ce0c687",
+    "sha": "d3429ea3d877bca4f0fc21c02f3cb6d63ce0c687"
+  },
+  {
+    "repository": "carol104/DinoPet",
+    "branch": "",
+    "lastCommitAt": "2026-11-15T21:45:33Z",
+    "lastCommitUrl": "https://github.com/carol104/DinoPet/commit/575f1721ccff5a593ba72202a95d443a75f9db9f",
+    "sha": "575f1721ccff5a593ba72202a95d443a75f9db9f"
+  },
+  {
+    "repository": "carol104/ReciclApp",
+    "branch": "feature/notificaciones",
+    "lastCommitAt": "2026-11-22T00:38:26Z",
+    "lastCommitUrl": "https://github.com/carol104/ReciclApp/commit/1d3c8d14cd0c1720b57121560bd94193bd12d5a4",
+    "sha": "1d3c8d14cd0c1720b57121560bd94193bd12d5a4"
+  },
+  {
+    "repository": "carol104/Wild-Store",
+    "branch": "",
+    "lastCommitAt": "2026-11-16T16:02:08Z",
+    "lastCommitUrl": "https://github.com/carol104/Wild-Store/commit/cf5d16afcc0db869ed998f88556defd979f8d73d",
+    "sha": "cf5d16afcc0db869ed998f88556defd979f8d73d"
+  },
+  {
+    "repository": "AdrianMora8/UTAxi",
+    "branch": "",
+    "lastCommitAt": "2026-06-11T21:37:40Z",
+    "lastCommitUrl": "https://github.com/AdrianMora8/UTAxi/commit/972b3368ab29c00091dfa014f940684fd9a93916",
+    "sha": "972b3368ab29c00091dfa014f940684fd9a93916"
+  },
+  {
+    "repository": "DavidJosueP2/Banking-Credit-Investment-Simulator",
+    "branch": "",
+    "lastCommitAt": "2026-09-28T22:30:53Z",
+    "lastCommitUrl": "https://github.com/DavidJosueP2/Banking-Credit-Investment-Simulator/commit/9509c9712ae18dfeae72084510f86eeaada3344f",
+    "sha": "9509c9712ae18dfeae72084510f86eeaada3344f"
+  },
+  {
+    "repository": "kiramman-mp3/sistema-inventario-supermercado",
+    "branch": "",
+    "lastCommitAt": "2026-11-19T22:10:29Z",
+    "lastCommitUrl": "https://github.com/kiramman-mp3/sistema-inventario-supermercado/commit/ce40a16f83c71021c65b3d262539a338b3d5d445",
+    "sha": "ce40a16f83c71021c65b3d262539a338b3d5d445"
+  },
+  {
+    "repository": "JoelBonillaG/iron_zone_odoo_das",
+    "branch": "",
+    "lastCommitAt": "2026-06-13T23:53:01Z",
+    "lastCommitUrl": "https://github.com/JoelBonillaG/iron_zone_odoo_das/commit/6e66e36e152da7fe73b150a80998c78b34e94e5d",
+    "sha": "6e66e36e152da7fe73b150a80998c78b34e94e5d"
+  },
+  {
+    "repository": "JosueGarciaAbata/team-corporate",
+    "branch": "",
+    "lastCommitAt": "2026-05-29T00:49:28Z",
+    "lastCommitUrl": "https://github.com/JosueGarciaAbata/team-corporate/commit/03700e538fd7a0882e3de7db47b9e4b99bc243f3",
+    "sha": "03700e538fd7a0882e3de7db47b9e4b99bc243f3"
+  }
+]

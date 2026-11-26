@@ -2,7 +2,7 @@ import {catalogGroups, normalizeTechnology} from '../src/technology-catalog.js';
 
 export function refreshTechnologies(groups) {
   const next = structuredClone(groups);
-  const rename = {'Network Support and Security': 'Cyberseguridad', 'Data Science Essentials With Python': 'Ciencia de datos', 'Data Science With Python': 'Ciencia de datos'};
+  const rename = {'Network Support and Security': 'Ciberseguridad', 'Cyberseguridad': 'Ciberseguridad', 'Data Science Essentials With Python': 'Ciencia de datos', 'Data Science With Python': 'Ciencia de datos'};
   for (const group of next) group.items = [...new Set(group.items.filter(item => item.toLowerCase() !== 'heroku').map(item => rename[item] || item))];
   const existing = new Set(next.flatMap(group => group.items).map(normalizeTechnology));
   for (const [index, items] of [[5, ['Cloudflare', 'Firebase']], [9, ['n8n']], [10, ['Notion']]]) {

@@ -37,6 +37,8 @@ Los banners de cursos se guardan en `public/assets/imagenes_cursos/` y se sirven
 
 Las capturas de proyectos se guardan en `public/assets/imagenes_proyectos/` y se sirven desde `/assets/imagenes_proyectos/`. Docker también monta esta carpeta para conservar las nuevas subidas al reconstruir. Una migración exporta las capturas existentes desde PostgreSQL y actualiza sus enlaces; conserva los archivos originales en la base de datos. El campo **Captura del proyecto** guarda las siguientes imágenes en la carpeta y mantiene una copia en PostgreSQL.
 
+Las fechas de **Último commit** proceden de una consulta a GitHub del 25 de noviembre de 2026 (`server/project-commit-dates.json`). Se conserva la fecha del commit y su enlace por repositorio; las tarjetas muestran el más reciente del proyecto y los detalles desglosan los proyectos con varios repositorios. La visualización usa la zona horaria de Ecuador. Esta consulta es puntual, no una sincronización automática. Cambiar un enlace de repositorio desde el panel borra su fecha anterior para evitar atribuirla al nuevo enlace.
+
 Requiere Node.js 22 y PostgreSQL (o Docker).
 
 ```powershell

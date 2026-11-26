@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { ExternalLink as ExternalLinkIcon, Users, X } from 'lucide-react';
 import ExternalLink from './ExternalLink';
 import ProjectRepositories from './ProjectRepositories';
+import ProjectCommitDate from './ProjectCommitDate';
 import ProjectCollaborators from './ProjectCollaborators';
 import ProjectVisual from './ProjectVisual';
 import TechnologyTags from './TechnologyTags';
@@ -32,6 +33,7 @@ export default function ProjectDialog({ project, onClose, triggerRef }) {
         <div className="dialog-body">
           <p className="eyebrow">PROYECTO · {categoryLabel(project.category)}</p>
           <h2 id="project-dialog-title">{project.title}</h2>
+          <ProjectCommitDate project={project}/>
           <p>{project.description}</p>
           <h3>Mi contribución</h3>
           <p>{project.contribution}</p>
@@ -44,7 +46,7 @@ export default function ProjectDialog({ project, onClose, triggerRef }) {
           <TechnologyTags items={project.tech}/>
           <div className="dialog-links">
             {project.url && <ExternalLink className="button primary" href={project.url}>Demo en vivo / Video <ExternalLinkIcon size={18}/></ExternalLink>}
-            <ProjectRepositories project={project}/>
+            <ProjectRepositories project={project} showCommitDates/>
           </div>
           {!project.url && !repositories.length && <p className="example-note">Todavía no hay enlaces de demo o repositorio disponibles.</p>}
         </div>

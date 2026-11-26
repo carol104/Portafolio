@@ -1,5 +1,6 @@
 import { ArrowUpRight, Users } from 'lucide-react';
 import ProjectRepositories from './ProjectRepositories';
+import ProjectCommitDate from './ProjectCommitDate';
 import ProjectCollaborators from './ProjectCollaborators';
 import ProjectVisual from './ProjectVisual';
 import TechnologyTags from './TechnologyTags';
@@ -34,6 +35,7 @@ export default function ProjectCard({ project, onOpen }) {
       {repositories.length === 1 && <ProjectRepositories project={project}/>}
       </div>
       <p>{project.subtitle}</p>
+      <ProjectCommitDate project={project}/>
       <p className="project-problem">{project.description}</p>
       <TechnologyTags items={project.tech}/>
       {repositories.length > 1 && <ProjectRepositories project={project}/>}

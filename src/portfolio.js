@@ -67,6 +67,16 @@ export function projectRepositories(project) {
   return project.github ? [{ name: '', url: project.github }] : [];
 }
 
+export function projectLastCommit(project) {
+  return projectRepositories(project).filter(repository => repository.lastCommitAt && Number.isFinite(Date.parse(repository.lastCommitAt)))
+    .reduce((latest, repository) => !latest || Date.parse(repository.lastCommitAt) > Date.parse(latest.lastCommitAt) ? repository : latest, null);
+}
+
+export function formatCommitDate(value) {
+  if (!value || !Number.isFinite(Date.parse(value))) return '';
+  return new Intl.DateTimeFormat('es-EC', {day: 'numeric', month: 'short', year: 'numeric', timeZone: 'America/Guayaquil'}).format(new Date(value));
+}
+
 export function categoryLabel(category) {
   return PROJECT_CATEGORY_LABELS[category] || PROJECT_FILTERS.find(item => item.id === category)?.label || category;
 }

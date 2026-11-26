@@ -15,6 +15,7 @@ const courseSchema = z.object({
  title: required,
  institution: required,
  period: short,
+ approximatePeriod: short.optional(),
  startDate: optionalDate,
  endDate: optionalDate,
  duration: short.default(''),

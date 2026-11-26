@@ -78,6 +78,7 @@ export default function Courses({ courses, preview = false }) {
                 <h3 className="course-title">{course.title}</h3>
 
                 <dl className="course-details">
+                  {!course.startDate && !course.endDate && course.approximatePeriod && <div><dt>Período aproximado</dt><dd>{course.approximatePeriod}</dd></div>}
                   {course.startDate && <div><dt>Inicio</dt><dd><time dateTime={course.startDate}>{dateLabel(course.startDate)}</time></dd></div>}
                   {course.endDate && <div><dt>Fin</dt><dd><time dateTime={course.endDate}>{dateLabel(course.endDate)}</time></dd></div>}
                   {[[course.duration, 'Duración'], [course.modality, 'Modalidad'], [course.location, 'Ubicación'], [course.status, 'Estado'], [course.role, 'Participación']].map(([value, label]) => value ? <div key={label}><dt>{label}</dt><dd>{value}</dd></div> : null)}

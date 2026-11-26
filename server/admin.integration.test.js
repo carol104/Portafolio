@@ -16,6 +16,7 @@ import {migrateProjectImages} from './project-images-migration.js';
 import {canonicalTechnology, normalizeTechnology} from '../src/technology-catalog.js';
 import commitDates from './project-commit-dates.json' with {type:'json'};
 import {migrateProjectCommitDates} from './project-commit-dates-migration.js';
+import {courseDetails, completeCourseDetails, migrateCourseDetails} from './course-details-migration.js';
 
 test('admin setup, authentication, uploads, publication and persistence with PostgreSQL',async t=>{
  const connection=new URL(process.env.DATABASE_URL);const control=new pg.Pool({connectionString:connection.href});
@@ -29,6 +30,29 @@ test('admin setup, authentication, uploads, publication and persistence with Pos
   const courseImagesPath=await mkdtemp(path.join(tmpdir(),'portfolio-course-images-'));
   const projectImagesPath=await mkdtemp(path.join(tmpdir(),'portfolio-project-images-'));
   const store=createContentStore(pool,{courseImagesPath,projectImagesPath});await store.initialize();
+  await t.test('course completion preserves every record, attachment and exact date and labels approximate periods',async()=>{
+   const original=await store.read();const data=structuredClone(original.data);
+   data.courses=courseDetails.map((details,index)=>({id:`learning-${index}`,title:details.title,institution:'Cisco',platform:'Cisco',period:'12 horas',kind:details.title==='Congreso VI'?'Evento':'Curso',description:'Texto anterior',startDate:'',endDate:'',duration:'12 horas',modality:'Online',status:'',role:'',location:'',tech:['Tema existente'],url:index===3?'':'https://example.com/original',image:'https://example.com/banner.png',certificate:'/api/media/11111111-2222-4333-8444-555555555555',badge:'https://example.com/badge',credential:'',visible:index!==2}));
+   data.courses[0].startDate='2026-08-27';data.courses[0].endDate='2026-09-16';
+   const before=structuredClone(data);
+   await pool.query('DELETE FROM content_migrations WHERE id=$1',['2026-11-course-learning-summaries-and-periods']);await store.save(data,original.revision);await store.initialize();
+   const saved=await store.read();const parsed=contentSchema.parse(saved.data);
+   assert.equal(saved.data.courses.length,before.courses.length);
+   for(const [index,course] of saved.data.courses.entries()){
+    for(const key of ['id','title','institution','platform','period','kind','startDate','endDate','duration','modality','certificate','image','badge','visible'])assert.deepEqual(course[key],before.courses[index][key]);
+    if(before.courses[index].url)assert.equal(course.url,before.courses[index].url);
+    assert.ok(course.description.length>100&&course.description.length<250);assert.ok(course.tech.includes('Tema existente'));
+   }
+   assert.equal(saved.data.courses[5].approximatePeriod,'Mayo–junio de 2024');
+   assert.equal(saved.data.courses[6].approximatePeriod,'Abril–mayo de 2024');
+   assert.equal(parsed.courses[6].approximatePeriod,'Abril–mayo de 2024');
+   assert.equal(completeCourseDetails({...before.courses[6],startDate:'2024-04-12'}).approximatePeriod,undefined);
+   assert.equal(saved.data.courses[7].role,'Asistente');assert.equal(saved.data.courses[2].role,'Estudiante');
+   const unrelated={...structuredClone(saved.data),courses:before.courses};assert.deepEqual(unrelated,before);
+   saved.data.courses[0].description='Edición posterior';await store.save(saved.data,saved.revision);const edited=await store.read();await migrateCourseDetails(pool);assert.equal((await store.read()).revision,edited.revision);
+   assert.equal((await store.read()).data.courses[0].description,'Edición posterior');
+   await pool.query('UPDATE site_content SET data=$1::jsonb,revision=1 WHERE id=1',[JSON.stringify(original.data)]);
+  });
   await t.test('all ten project commit dates survive publication and later edits without touching other data',async()=>{
    const original=await store.read();const data=structuredClone(original.data);
    const grouped=[commitDates.slice(0,3),...commitDates.slice(3).map(item=>[item])];

@@ -141,6 +141,7 @@ test('Home previews limit cards and link to complete catalogs without limiting d
  courses[0].location='Quito';
  courses[1].certificate='https://example.com/legacy-certificate';
  courses[1].url='https://example.com/verify';
+ courses[1].approximatePeriod='Abril–mayo de 2024';
  for(const preview of [true,false]){
   const html=renderToStaticMarkup(React.createElement(Courses,{courses,preview}));
   assert.equal([...html.matchAll(/class="course-title"/g)].length,preview?2:5);
@@ -150,6 +151,7 @@ test('Home previews limit cards and link to complete catalogs without limiting d
   assert.match(html, /dateTime="2026-12-16"/i);
   assert.ok(html.includes('Presencial'));
   assert.ok(html.includes('Quito'));
+  assert.ok(html.includes('Período aproximado'));assert.ok(html.includes('Abril–mayo de 2024'));
   for(const label of ['Todos','Cursos','Eventos'])assert.ok(html.includes(`>${label}</button>`));
   assert.ok(!html.includes('>Certificaciones</button>'));
   assert.ok(!html.includes(courses[1].certificate));
